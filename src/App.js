@@ -1,5 +1,7 @@
 import OriginalResearch1 from "./components/OriginalResearch1/OriginalResearch1";
 import OriginalResearch2 from "./components/OriginalResearch2/OriginalResearch2";
+import SwiftFoliosResearchForm from "./components/SwiftFoliosResearchForm/SwiftFoliosResearchForm";
+import CustomDropdown from "./components/CustomComponents/CustomDropdown/CustomDropdown";
 import "./App.css";
 
 function App() {
@@ -43,6 +45,7 @@ function App() {
   ];
   return (
     <div className="App">
+      <SwiftFoliosResearchForm/>
       <OriginalResearch1 />
       <OriginalResearch2 fundData={fundData} />
     </div>

@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
+
+.swift-folios-research-form-container {
+  height: auto;
+  width: 100vw;
+  min-width: 30vw;
+  font-family: "Open Sans", sans-serif;
+  letter-spacing: -0.7px;
+  box-sizing: border-box;
+}
+
+.swift-folios-research-form-container > form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.swift-folios-research-form-submit-button {
+  border-radius: 35px;
+  backdrop-filter: blur(2px);
+  width: 122px;
+  height: 35px;
+  flex-shrink: 0;
+  letter-spacing: -0.7px;
+  cursor: pointer;
+}
+
+.swift-folios-research-form-ql-container {
+  background: rgba(241, 241, 241, 0.254902);
+}
+
+.swift-folios-research-form-group label {
+  display: block;
+  padding: 10px 0;
+}
+
+.swift-folios-research-form-text {
+  font-weight: 600;
+  font-size: 12px;
+  color: #011627;
+  cursor: pointer;
+}
+
+.swift-folios-research-form-image-edit-button {
+  padding: 10px 25px;
+}
+
+.swift-folios-research-form-image-editor-modal {
+  width: 60vw;
+  height: 500px;
+  background-color: whitesmoke;
+}
