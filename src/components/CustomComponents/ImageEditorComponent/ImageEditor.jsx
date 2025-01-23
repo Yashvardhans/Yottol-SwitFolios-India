@@ -3,7 +3,7 @@ import CustomButton from "../CustomButton/CustomButton";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../../../utils/CropImage.js"; // Utility function to get cropped image
 
-const ImageEditor = () => {
+const ImageEditor = ({ onSave }) => {
   const [imageSrc, setImageSrc] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 }); // State for crop position
   const [zoom, setZoom] = useState(1);
@@ -40,17 +40,17 @@ const ImageEditor = () => {
     if (!croppedAreaPixels || !imageSrc) return;
     try {
       const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
-      setCroppedImage(croppedImage);
+      const fileName = `cropped-image-${Date.now()}.png`;
 
-      // Save the image
-      const link = document.createElement("a");
-      link.download = "edited-image.png";
-      link.href = croppedImage;
-      link.click();
+      
+      onSave(fileName);
+
+      
+      console.log("Cropped image saved as:", fileName);
     } catch (error) {
       console.error("Error cropping the image:", error);
     }
-  }, [croppedAreaPixels, imageSrc, rotation]);
+  }, [croppedAreaPixels, imageSrc, rotation, onSave]);
 
   return (
     <div style={{ display: "flex", justifyContent: "space-between", padding: "20px" }}>

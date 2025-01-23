@@ -1,15 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+
 import SwiftFoliosModal from "../CustomComponents/SwiftFoliosModal/SwiftFoliosModal";
 import ImageEditor from "../CustomComponents/ImageEditorComponent/ImageEditor";
 import CustomDropdown from "../CustomComponents/CustomDropdown/CustomDropdown";
 import CustomButton from "../CustomComponents/CustomButton/CustomButton";
 import CustomSearchableDropdown from "../CustomComponents/CustomSearchableDropdown/CustomSearchableDropdown";
 import CustomInputError from "../CustomComponents/CustomInput/CustomInputError";
+
+import image from "../../assets/edited-image.png"
+
+import ServerRequest from "../../utils/ServerRequest";
+
 import "./SwiftFoliosForm.css";
 
 const SwiftFoliosResearchForm = () => {
+
+  console.log(process.env.REACT_APP_REQUEST_BASE_URL);
+  
   const allStocks = [
     "Stock 1",
     "Stock 2",
@@ -19,20 +28,34 @@ const SwiftFoliosResearchForm = () => {
     "Stock 2 2",
   ];
   const [type, setType] = useState("");
-  const [heading, setHeading] = useState("");
+  const [heading, setHeading] = useState("heading");
   const [body, setBody] = useState("");
   const [stockSelections, setStockSelections] = useState([null, null, null]);
   const [attachments, setAttachments] = useState([]);
   const [videoFile, setVideoFile] = useState(null);
   const [videoURL, setVideoURL] = useState("");
   const [isImageEditorOpen, setIsImageEditorOpen] = useState(false);
+  const [thumbnailFile,setThumbnailFile] = useState()
+  
+
+  const uniqueId = `${Date.now()}`;
+console.log("Generated ID:", uniqueId);
+
+  const stockData = "1234"
+  const relatedStockData = ["1234","4567","8910"]
+  const video_File = null
+  const video_URL = "www.google.com"
+  const thumbnail_File = new File(["This is the thumbnail content"], "thumbnail.jpg", {
+    type: "image/jpeg",
+  });
+
+console.log("thumb",thumbnail_File);
 
   const handleStockSelection = (value, index) => {
     const updatedStocks = [...stockSelections];
     updatedStocks[index] = value;
     setStockSelections(updatedStocks);
   };
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (videoURL) {
@@ -55,24 +78,49 @@ const SwiftFoliosResearchForm = () => {
     setVideoURL(url);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (type === "video" && videoFile && videoURL) {
-      alert("Please provide either a video file or a video URL, not both.");
-      return;
+    // if (type === "video" && videoFile && videoURL) {
+    //   alert("Please provide either a video file or a video URL, not both.");
+    //   return;
+    // }
+    // if (type === "video" && !videoFile && !videoURL) {
+    //   alert("Please provide a video file or a video URL.");
+    //   return;
+    // }
+    const formData = new FormData();
+    formData.append("id",uniqueId)
+    formData.append("body", body);
+    formData.append("heading", heading);
+    formData.append("stockData", stockData);
+    formData.append("relatedStockData", JSON.stringify(relatedStockData));
+    formData.append("videoUrl", video_URL);
+    if (attachments) {
+      formData.append("file", attachments);
     }
-    if (type === "video" && !videoFile && !videoURL) {
-      alert("Please provide a video file or a video URL.");
-      return;
+    if (video_File) {
+      formData.append("videoFile", video_File);
     }
+    if (thumbnail_File) {
+      formData.append("thumbnailFile", thumbnail_File);
+    }
+    const request = await ServerRequest({
+      method: "post",
+      URL: "/swift-folios-research/form-data/post",
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     console.log({
       type,
       heading,
       body,
-      stockSelections,
-      attachments,
-      videoFile,
-      videoURL,
+      stockData,
+      relatedStockData,
+      thumbnail_File,
+      video_File,
+      video_URL,
     });
   };
 
@@ -112,7 +160,10 @@ const SwiftFoliosResearchForm = () => {
             </div>
 
             <div className="swift-folios-research-form-group">
-              <label htmlFor="heading" className="swift-folios-research-form-text">
+              <label
+                htmlFor="heading"
+                className="swift-folios-research-form-text"
+              >
                 Heading
               </label>
               <CustomInputError
@@ -158,14 +209,19 @@ const SwiftFoliosResearchForm = () => {
             </div>
 
             <div className="swift-folios-research-form-group">
-              <label htmlFor="attachments" className="swift-folios-research-form-text">
+              <label
+                htmlFor="attachments"
+                className="swift-folios-research-form-text"
+              >
                 Upload Pdf
               </label>
               <input
                 type="file"
                 id="attachments"
                 accept=".pdf"
-                onChange={(e) => setAttachments([...attachments, e.target.files[0]])}
+                onChange={(e) =>
+                  setAttachments([...attachments, e.target.files[0]])
+                }
                 style={{ display: "none", cursor: "pointer" }}
               />
             </div>
@@ -173,7 +229,12 @@ const SwiftFoliosResearchForm = () => {
             {type === "video" && (
               <>
                 <div className="swift-folios-research-form-group">
-                  <label htmlFor="videoFile" className="swift-folios-research-form-text">Upload Video</label>
+                  <label
+                    htmlFor="videoFile"
+                    className="swift-folios-research-form-text"
+                  >
+                    Upload Video
+                  </label>
                   <input
                     type="file"
                     id="videoFile"
@@ -184,7 +245,12 @@ const SwiftFoliosResearchForm = () => {
                 </div>
 
                 <div className="swift-folios-research-form-group">
-                  <label htmlFor="videoURL" className="swift-folios-research-form-text">Video URL</label>
+                  <label
+                    htmlFor="videoURL"
+                    className="swift-folios-research-form-text"
+                  >
+                    Video URL
+                  </label>
                   <CustomInputError
                     type="text"
                     id="videoURL"
@@ -209,7 +275,12 @@ const SwiftFoliosResearchForm = () => {
       {isImageEditorOpen && (
         <SwiftFoliosModal closeModal={() => setIsImageEditorOpen(false)}>
           <div className="swift-folios-research-form-image-editor-modal">
-            <ImageEditor />
+            <ImageEditor
+              onSave={(fileName) => {
+                setThumbnailFile(fileName);
+                setIsImageEditorOpen(false); // Close the modal after saving
+              }}
+            />
           </div>
         </SwiftFoliosModal>
       )}

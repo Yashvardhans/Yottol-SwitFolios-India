@@ -1,12 +1,28 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
 
 import CustomSearch from "../CustomComponents/CustomSearch/CustomSearch";
 import "../../css/SwiftFoliosReserch/SwiftFoliosResearch.css";
+
+import ServerRequest from "../../utils/ServerRequest";
 
 import download from "../../assets/icons/download_icon.svg";
 
 const OriginalResearch2 = ({ fundData }) => {
   console.log("fundData", fundData);
+  const [allData,setAllData] =useState()
+
+  useEffect(()=>{
+    const fetchData = async () =>{
+      const data = await ServerRequest({
+        method: "get",
+      URL: "/swift-folios-research/form-data/get"
+      })
+      setAllData(data);
+      console.log(data);
+      
+      }
+      fetchData()
+  },[])
 
   const fundRowData = [
     {
