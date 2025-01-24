@@ -3,6 +3,7 @@ import OriginalResearch2 from "./components/OriginalResearch2/OriginalResearch2"
 import SwiftFoliosResearchForm from "./components/SwiftFoliosResearchForm/SwiftFoliosResearchForm";
 import CustomDropdown from "./components/CustomComponents/CustomDropdown/CustomDropdown";
 import "./App.css";
+import "./css/global.css"
 
 function App() {
   const fundData = [
@@ -16,7 +17,7 @@ function App() {
       text: "The fund aims to track the performance of the 1OAK MA80 Strategy, which has a benchmark allocation of approximately 80% in Equities with 20% in Bonds and Alternatives.. The strategy has exposure to equities, fixed income, cash and alternative assets.",
       file: "",
       video: "",
-      date:"3rd of December 2021"
+      date: "3rd of December 2021"
     },
     {
       name: "RELIANCE",
@@ -28,7 +29,7 @@ function App() {
       text: "The fund aims to track the performance of the 1OAK MA80 Strategy, which has a benchmark allocation of approximately 80% in Equities with 20% in Bonds and Alternatives.. The strategy has exposure to equities, fixed income, cash and alternative assets.",
       file: "",
       video: "",
-      date:"3rd of December 2021"
+      date: "3rd of December 2021"
     },
     {
       name: "RELIANCE",
@@ -40,12 +41,12 @@ function App() {
       text: "The fund aims to track the performance of the 1OAK MA80 Strategy, which has a benchmark allocation of approximately 80% in Equities with 20% in Bonds and Alternatives.. The strategy has exposure to equities, fixed income, cash and alternative assets.",
       file: "",
       video: "video1.mp4",
-      date:"3rd of December 2021"
+      date: "3rd of December 2021"
     },
   ];
   return (
     <div className="App">
-      <SwiftFoliosResearchForm/>
+      <SwiftFoliosResearchForm />
       <OriginalResearch1 />
       <OriginalResearch2 fundData={fundData} />
     </div>

@@ -9,16 +9,16 @@ import CustomButton from "../CustomComponents/CustomButton/CustomButton";
 import CustomSearchableDropdown from "../CustomComponents/CustomSearchableDropdown/CustomSearchableDropdown";
 import CustomInputError from "../CustomComponents/CustomInput/CustomInputError";
 
-import image from "../../assets/edited-image.png"
+import image from "../../assets/edited-image.png";
 
 import ServerRequest from "../../utils/ServerRequest";
 
 import "./SwiftFoliosForm.css";
+import StockSearch from "../CustomComponents/StockSearch/StockSearch";
 
 const SwiftFoliosResearchForm = () => {
-
   console.log(process.env.REACT_APP_REQUEST_BASE_URL);
-  
+
   const allStocks = [
     "Stock 1",
     "Stock 2",
@@ -35,21 +35,24 @@ const SwiftFoliosResearchForm = () => {
   const [videoFile, setVideoFile] = useState(null);
   const [videoURL, setVideoURL] = useState("");
   const [isImageEditorOpen, setIsImageEditorOpen] = useState(false);
-  const [thumbnailFile,setThumbnailFile] = useState()
-  
+  const [thumbnailFile, setThumbnailFile] = useState();
 
   const uniqueId = `${Date.now()}`;
-console.log("Generated ID:", uniqueId);
+  console.log("Generated ID:", uniqueId);
 
-  const stockData = "1234"
-  const relatedStockData = ["1234","4567","8910"]
-  const video_File = null
-  const video_URL = "www.google.com"
-  const thumbnail_File = new File(["This is the thumbnail content"], "thumbnail.jpg", {
-    type: "image/jpeg",
-  });
+  const stockData = "1234";
+  const relatedStockData = ["1234", "4567", "8910"];
+  const video_File = null;
+  const video_URL = "www.google.com";
+  const thumbnail_File = new File(
+    ["This is the thumbnail content"],
+    "thumbnail.jpg",
+    {
+      type: "image/jpeg",
+    }
+  );
 
-console.log("thumb",thumbnail_File);
+  console.log("thumb", thumbnail_File);
 
   const handleStockSelection = (value, index) => {
     const updatedStocks = [...stockSelections];
@@ -89,7 +92,7 @@ console.log("thumb",thumbnail_File);
     //   return;
     // }
     const formData = new FormData();
-    formData.append("id",uniqueId)
+    formData.append("id", uniqueId);
     formData.append("body", body);
     formData.append("heading", heading);
     formData.append("stockData", stockData);
@@ -147,6 +150,11 @@ console.log("thumb",thumbnail_File);
             </div>
 
             <div className="swift-folios-research-form-stock-container">
+              <StockSearch
+                handleSelect={(s) => {
+                  console.log("handle click call", s);
+                }}
+              />
               {stockSelections.map((selectedStock, index) => (
                 <div className="swift-folios-research-form-group" key={index}>
                   <CustomSearchableDropdown

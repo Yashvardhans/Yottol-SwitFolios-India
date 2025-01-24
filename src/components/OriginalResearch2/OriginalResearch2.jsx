@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from "react";
+import React, { useEffect, useState } from "react";
 
 import CustomSearch from "../CustomComponents/CustomSearch/CustomSearch";
 import "../../css/SwiftFoliosReserch/SwiftFoliosResearch.css";
@@ -6,23 +6,23 @@ import "../../css/SwiftFoliosReserch/SwiftFoliosResearch.css";
 import ServerRequest from "../../utils/ServerRequest";
 
 import download from "../../assets/icons/download_icon.svg";
+import useMarketStock from "../../hooks/useMarketStock";
 
 const OriginalResearch2 = ({ fundData }) => {
-  console.log("fundData", fundData);
-  const [allData,setAllData] =useState()
+  // console.log("fundData", fundData);
+  const [allData, setAllData] = useState();
 
-  useEffect(()=>{
-    const fetchData = async () =>{
+  useEffect(() => {
+    const fetchData = async () => {
       const data = await ServerRequest({
         method: "get",
-      URL: "/swift-folios-research/form-data/get"
-      })
+        URL: "/swift-folios-research/form-data/get",
+      });
       setAllData(data);
       console.log(data);
-      
-      }
-      fetchData()
-  },[])
+    };
+    fetchData();
+  }, []);
 
   const fundRowData = [
     {
@@ -45,13 +45,23 @@ const OriginalResearch2 = ({ fundData }) => {
     },
   ];
 
+  const stock_data = useMarketStock("HDFCBANK");
+
+  console.log(
+    "stock_data",
+    stock_data,
+    stock_data?.last_traded_price,
+    stock_data?.change_price,
+    stock_data?.change_percentage
+  );
+
   return (
     <div className="swift-folios-research-main">
       <div className="swift-folios-research-main-header-container">
         <p className="swift-folios-research-main-header">
           Original Research- SwiftResearch
         </p>
-       <CustomSearch/>
+        <CustomSearch />
       </div>
       {fundData.map((data, index) => (
         <div
@@ -84,10 +94,7 @@ const OriginalResearch2 = ({ fundData }) => {
             </div>
             <div className="swift-folios-research-row3">
               {fundRowData.map((row, idx) => (
-                <div
-                  className="swift-folios-research-row3-container"
-                  key={idx}
-                >
+                <div className="swift-folios-research-row3-container" key={idx}>
                   <div className="swift-folios-research-fund-name">
                     {row.name}
                   </div>
