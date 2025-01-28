@@ -207,3 +207,48 @@
 .swift-folios-research-form-container .stock__search .stock__suggestions p:hover {
   background-color: #f9f9f9;
 }
+
+
+.selected-stocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; 
+  margin-top: 10px;
+}
+
+.selected-stock-item {
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  background-color:white;
+  border: 1px solid #E8E8E8;
+  letter-spacing: -0.8px;
+  border-radius: 45px;
+  padding: 5px 10px;
+}
+
+.selected-stock-item span {
+  margin-right: 5px;
+  font-family: "Open Sans",sans-serif;
+  font-size: 10px;
+  color: #011627;
+  font-weight: 500;
+}
+
+.remove-stock-button {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 2px solid #E8E8E8;
+  border-radius: 50%;
+  color: #E8E8E8;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.remove-stock-button:hover {
+  color: #6c6767;
+  border-color:#6c6767 ;
+}

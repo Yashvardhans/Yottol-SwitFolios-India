@@ -10,9 +10,12 @@ const ImageEditor = ({ onSave }) => {
   const [rotation, setRotation] = useState(0);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null); // Cropped area in pixels
   const [croppedImage, setCroppedImage] = useState(null);
-
+  const [upFile,setUpFile] = useState(null)
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
+    setUpFile(file)
+    console.log("file",file);
+    
     if (file) {
       const reader = new FileReader();
       reader.onload = () => setImageSrc(reader.result);
@@ -40,13 +43,14 @@ const ImageEditor = ({ onSave }) => {
     if (!croppedAreaPixels || !imageSrc) return;
     try {
       const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
-      const fileName = `cropped-image-${Date.now()}.png`;
-
       
-      onSave(fileName);
 
+      const file1 = new File([croppedImage], `${upFile.name}`, { type: croppedImage.type });
+      onSave(file1);
+
+      console.log("cropimage",file1);
       
-      console.log("Cropped image saved as:", fileName);
+      
     } catch (error) {
       console.error("Error cropping the image:", error);
     }

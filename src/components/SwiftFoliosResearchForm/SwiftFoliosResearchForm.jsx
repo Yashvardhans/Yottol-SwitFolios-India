@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
+import { useNavigate } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 
 import SwiftFoliosModal from "../CustomComponents/SwiftFoliosModal/SwiftFoliosModal";
@@ -9,58 +10,38 @@ import CustomButton from "../CustomComponents/CustomButton/CustomButton";
 import CustomSearchableDropdown from "../CustomComponents/CustomSearchableDropdown/CustomSearchableDropdown";
 import CustomInputError from "../CustomComponents/CustomInput/CustomInputError";
 
+
 import image from "../../assets/edited-image.png";
 
 import ServerRequest from "../../utils/ServerRequest";
+import Pulse from "../CustomComponents/Loader/Pulse";
 
 import "./SwiftFoliosForm.css";
 import StockSearch from "../CustomComponents/StockSearch/StockSearch";
 
 const SwiftFoliosResearchForm = () => {
-  console.log(process.env.REACT_APP_REQUEST_BASE_URL);
-
-  const allStocks = [
-    "Stock 1",
-    "Stock 2",
-    "Stock 3",
-    "Stock 4",
-    "Stock 5",
-    "Stock 2 2",
-  ];
+  
+  const navigate = useNavigate();
   const [type, setType] = useState("");
-  const [heading, setHeading] = useState("heading");
+  const [heading, setHeading] = useState("");
   const [body, setBody] = useState("");
-  const [stockSelections, setStockSelections] = useState([null, null, null]);
+  const [relatedStockSelections, setRelatedStockSelections] = useState([]);
+  const [singleStockSelections, setSingleStockSelections] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [videoFile, setVideoFile] = useState(null);
   const [videoURL, setVideoURL] = useState("");
   const [isImageEditorOpen, setIsImageEditorOpen] = useState(false);
   const [thumbnailFile, setThumbnailFile] = useState();
+  const [loading, setLoading] = useState(false);
 
   const uniqueId = `${Date.now()}`;
   console.log("Generated ID:", uniqueId);
 
-  const stockData = "1234";
-  const relatedStockData = ["1234", "4567", "8910"];
-  const video_File = null;
-  const video_URL = "www.google.com";
-  const thumbnail_File = new File(
-    ["This is the thumbnail content"],
-    "thumbnail.jpg",
-    {
-      type: "image/jpeg",
-    }
-  );
+  
 
-  console.log("thumb", thumbnail_File);
-
-  const handleStockSelection = (value, index) => {
-    const updatedStocks = [...stockSelections];
-    updatedStocks[index] = value;
-    setStockSelections(updatedStocks);
-  };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    
     if (videoURL) {
       alert("You can only upload a video file or enter a video URL, not both.");
       return;
@@ -71,7 +52,24 @@ const SwiftFoliosResearchForm = () => {
     }
     setVideoFile(file);
   };
-
+  const handleAttachmentChange = (e) => {
+    const file = e.target.files[0];
+  
+    if (!file) return;
+  
+    console.log("Selected attachment file:", file);
+    console.log("fiiiile", e.target.files);
+    
+  
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Attachment size exceeds 10MB");
+      return;
+    }
+  
+    
+    setAttachments(file);  
+  };
+  
   const handleURLChange = (e) => {
     const url = e.target.value;
     if (videoFile) {
@@ -81,54 +79,95 @@ const SwiftFoliosResearchForm = () => {
     setVideoURL(url);
   };
 
+  const handleRelatedStockSelection = (selectedStock) => {
+    console.log("se", selectedStock);
+
+    if (relatedStockSelections.length >= 3) {
+      alert("You can select a maximum of 3 stocks.");
+      return;
+    }
+    if (!relatedStockSelections.includes(selectedStock)) {
+      setRelatedStockSelections([...relatedStockSelections, selectedStock]);
+    }
+  };
+  
+  
+
+  const handleSingleStockSelection = (selectedStock) => {
+    if (relatedStockSelections.length >= 1) {
+      alert("You can select only one stock.");
+      return;
+    }
+    if (!singleStockSelections.includes(selectedStock)) {
+      setSingleStockSelections([selectedStock]);
+    }
+  };
+
+  const handleRemoveStock = (stock) => {
+    setRelatedStockSelections(
+      relatedStockSelections.filter((s) => s !== stock)
+    );
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (type === "video" && videoFile && videoURL) {
-    //   alert("Please provide either a video file or a video URL, not both.");
-    //   return;
-    // }
-    // if (type === "video" && !videoFile && !videoURL) {
-    //   alert("Please provide a video file or a video URL.");
-    //   return;
-    // }
+    if (type === "video" && videoFile && videoURL) {
+      alert("Please provide either a video file or a video URL, not both.");
+      return;
+    }
+    if (type === "video" && !videoFile && !videoURL) {
+      alert("Please provide a video file or a video URL.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("id", uniqueId);
     formData.append("body", body);
     formData.append("heading", heading);
-    formData.append("stockData", stockData);
-    formData.append("relatedStockData", JSON.stringify(relatedStockData));
-    formData.append("videoUrl", video_URL);
+    formData.append("stockData", singleStockSelections);
+    formData.append("relatedStockData", JSON.stringify(relatedStockSelections));
+    formData.append("videoUrl", videoURL);
     if (attachments) {
       formData.append("file", attachments);
     }
-    if (video_File) {
-      formData.append("videoFile", video_File);
+    if (videoFile) {
+      formData.append("videoFile", videoFile);
     }
-    if (thumbnail_File) {
-      formData.append("thumbnailFile", thumbnail_File);
+    if (thumbnailFile) {
+      formData.append("thumbnailFile", thumbnailFile);
     }
-    const request = await ServerRequest({
-      method: "post",
-      URL: "/swift-folios-research/form-data/post",
-      data: formData,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    console.log({
-      type,
-      heading,
-      body,
-      stockData,
-      relatedStockData,
-      thumbnail_File,
-      video_File,
-      video_URL,
-    });
+
+    try {
+      setLoading(true);
+      const request = await ServerRequest({
+        method: "post",
+        URL: "/swift-folios-research/form-data/post",
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      
+      if (request?.message === "Data added successfully") {
+        alert("Form submitted successfully");
+        navigate("/research2");
+      }
+    } catch (error) {
+      alert("Error submitting the form");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <div className="swift-folios-research-form-container">
+      {loading ? (
+        <div className="swift-folios-research-loader">
+        <p>Loading</p>
+        <Pulse />
+      </div>
+      ) : (
       <form onSubmit={handleSubmit}>
         <div className="swift-folios-research-form-group">
           <CustomDropdown
@@ -152,19 +191,26 @@ const SwiftFoliosResearchForm = () => {
             <div className="swift-folios-research-form-stock-container">
               <StockSearch
                 handleSelect={(s) => {
-                  console.log("handle click call", s);
+                  handleSingleStockSelection(s);
                 }}
               />
-              {stockSelections.map((selectedStock, index) => (
-                <div className="swift-folios-research-form-group" key={index}>
-                  <CustomSearchableDropdown
-                    label={`Select Stock ${index + 1}`}
-                    options={allStocks}
-                    selected={selectedStock}
-                    onChange={(value) => handleStockSelection(value, index)}
-                  />
-                </div>
-              ))}
+              <div className="selected-stocks">
+                {singleStockSelections.length > 0 && (
+                  <div className="selected-stocks">
+                    {singleStockSelections.map((stock, index) => (
+                      <div key={index} className="selected-stock-item">
+                        <span>{stock}</span>
+                        <button
+                          className="remove-stock-button"
+                          onClick={() => handleRemoveStock(stock)}
+                        >
+                          ✖
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="swift-folios-research-form-group">
@@ -178,11 +224,11 @@ const SwiftFoliosResearchForm = () => {
                 type="text"
                 id="heading"
                 value={heading}
-                onChange={(e) => setHeading(e.target.value)}
+                onInputChange={(name, inputValue) => setHeading(inputValue)}
               />
             </div>
 
-            <div className="swift-folios-research-form-group">
+            <div className="swift-folios-research-form-group react-quill-group">
               <label htmlFor="body" className="swift-folios-research-form-text">
                 Body
               </label>
@@ -215,6 +261,30 @@ const SwiftFoliosResearchForm = () => {
                 }}
               />
             </div>
+            <div className="swift-folios-research-form-stock-container">
+              <StockSearch
+                handleSelect={(s) => {
+                  handleRelatedStockSelection(s);
+                }}
+              />
+              <div className="selected-stocks">
+                {relatedStockSelections.length > 0 && (
+                  <div className="selected-stocks">
+                    {relatedStockSelections.map((stock, index) => (
+                      <div key={index} className="selected-stock-item">
+                        <span>{stock}</span>
+                        <button
+                          className="remove-stock-button"
+                          onClick={() => handleRemoveStock(stock)}
+                        >
+                          ✖
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
 
             <div className="swift-folios-research-form-group">
               <label
@@ -227,9 +297,7 @@ const SwiftFoliosResearchForm = () => {
                 type="file"
                 id="attachments"
                 accept=".pdf"
-                onChange={(e) =>
-                  setAttachments([...attachments, e.target.files[0]])
-                }
+                onChange={handleAttachmentChange}
                 style={{ display: "none", cursor: "pointer" }}
               />
             </div>
@@ -263,7 +331,7 @@ const SwiftFoliosResearchForm = () => {
                     type="text"
                     id="videoURL"
                     value={videoURL}
-                    onChange={handleURLChange}
+                    onInputChange={(name, inputValue) => setVideoURL(inputValue)}
                   />
                 </div>
               </>
@@ -279,6 +347,7 @@ const SwiftFoliosResearchForm = () => {
           </>
         )}
       </form>
+      )}
 
       {isImageEditorOpen && (
         <SwiftFoliosModal closeModal={() => setIsImageEditorOpen(false)}>
@@ -286,14 +355,19 @@ const SwiftFoliosResearchForm = () => {
             <ImageEditor
               onSave={(fileName) => {
                 setThumbnailFile(fileName);
-                setIsImageEditorOpen(false); // Close the modal after saving
+                setIsImageEditorOpen(false);
               }}
             />
           </div>
         </SwiftFoliosModal>
       )}
+    
     </div>
   );
 };
 
 export default SwiftFoliosResearchForm;
+
+
+
+

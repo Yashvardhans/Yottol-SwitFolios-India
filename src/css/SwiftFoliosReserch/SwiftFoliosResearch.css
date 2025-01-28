@@ -121,6 +121,9 @@ body {
     gap: 22px;
     padding-bottom: 69px;
   }
+  .react-quill-group{
+    margin-bottom: 15px;
+  }
   .swift-folios-research-top-text {
     width: 315px;
     height: 32px;
@@ -141,4 +144,18 @@ body {
     letter-spacing: -5%;
     line-height: 16px;
   }
-  
+  .swift-folios-research-loader {
+    align-items: center;
+    column-gap: 21px;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
+    flex-direction: column;
+    row-gap: 20px;
+  }
+  .swift-folios-research-loader p {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+  }
