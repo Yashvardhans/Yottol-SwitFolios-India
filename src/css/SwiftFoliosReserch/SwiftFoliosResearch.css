@@ -39,6 +39,7 @@ body {
     border: 0.5px solid #e8e8e8;
     padding: 16px;
     border-radius: 10px;
+    
   }
   .swift-folios-research-row1 {
     box-sizing: border-box;
@@ -159,3 +160,8 @@ body {
     font-weight: 500;
     letter-spacing: -0.5px;
   }
+.stock-label{
+  font-size: 12px;
+  font-weight: 600;
+  margin: 5px 0;
+}

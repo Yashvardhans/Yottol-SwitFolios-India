@@ -29,6 +29,7 @@
   background: rgba(241, 241, 241, 0.254902);
 }
 
+
 .swift-folios-research-form-group label {
   display: block;
   padding: 10px 0;
@@ -251,4 +252,36 @@
 .remove-stock-button:hover {
   color: #6c6767;
   border-color:#6c6767 ;
+}
+
+.error-text{
+  font-size: 10px;
+  font-style: italic;
+  color: #011627;
+}
+
+.swift-folios-research-file-group{
+  display: flex;
+  gap: 10px;
+}
+.uploaded-file-name{
+  font-size: 12px;
+  padding: 10px 0;
+}
+
+.swift-folios-research-file-download-button{
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.swift-folios-research-file-display{
+  display: flex;
+  gap: 5px;
+}
+.remove-file-button{
+  background: none;
+  cursor: pointer;
+  font-size: 12px;
+  border: none;
+  color: #011627;
 }
