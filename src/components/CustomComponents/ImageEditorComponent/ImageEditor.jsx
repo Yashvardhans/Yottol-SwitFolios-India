@@ -42,19 +42,19 @@ const ImageEditor = ({ onSave }) => {
   const saveCroppedImage = useCallback(async () => {
     if (!croppedAreaPixels || !imageSrc) return;
     try {
-      const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
       
-
-      const file1 = new File([croppedImage], `${upFile.name}`, { type: croppedImage.type });
+      const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
+      
+      
+      const file1 = new File([croppedBlob], upFile.name, { type: croppedBlob.type });
+      
       onSave(file1);
-
-      console.log("cropimage",file1);
-      
-      
+      console.log("Cropped image file:", file1);
     } catch (error) {
       console.error("Error cropping the image:", error);
     }
-  }, [croppedAreaPixels, imageSrc, rotation, onSave]);
+  }, [croppedAreaPixels, imageSrc, rotation, onSave, upFile]);
+  
 
   return (
     <div style={{ display: "flex", justifyContent: "space-between", padding: "20px" }}>

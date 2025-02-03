@@ -25,7 +25,7 @@ body {
     box-sizing: border-box;
     margin: 27px 0;
     width: 887px;
-    height: 295px;
+    height: auto;
     border: 0.5px solid #e8e8e8;
     padding: 16px;
     border-radius: 10px;
@@ -35,7 +35,7 @@ body {
     box-sizing: border-box;
     margin: 27px 0;
     width: 887px;
-    height: 295px;
+    height: auto;
     border: 0.5px solid #e8e8e8;
     padding: 16px;
     border-radius: 10px;
@@ -115,7 +115,9 @@ body {
     color: #011627;
     padding: 8px 15px 0 15px;
   }
-  
+  .swift-folios-research-sub-container{
+    min-width: 550px;
+  }
   .swift-folios-research-main-top {
     display: flex;
     flex-direction: column;
@@ -160,8 +162,30 @@ body {
     font-weight: 500;
     letter-spacing: -0.5px;
   }
+  
 .stock-label{
   font-size: 12px;
   font-weight: 600;
   margin: 5px 0;
+}
+
+.read-full-button{
+  background: none;
+  border: none;
+}
+.read-full-button-group{
+  display: flex;
+}
+.arrow-up,
+.arrow-down {
+  transition: transform 0.3s ease; 
+  cursor: pointer;
+}
+
+.arrow-up {
+  transform: rotate(180deg);
+}
+
+.arrow-down {
+  transform: rotate(0deg);
 }

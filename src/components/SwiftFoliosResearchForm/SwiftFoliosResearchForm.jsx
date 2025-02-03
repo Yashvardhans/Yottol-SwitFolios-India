@@ -228,7 +228,7 @@ const SwiftFoliosResearchForm = () => {
           <Pulse />
         </div>
       ) : (
-        <form onSubmit={handleSubmit}>
+        <form >
           <div className="swift-folios-research-form-group">
             <CustomDropdown
               label={"Type"}
