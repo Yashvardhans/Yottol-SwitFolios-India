@@ -2,14 +2,22 @@ import React, { useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import downloadIcon from "../../assets/icons/download_icon.svg";
 import ServerRequest from "../../utils/ServerRequest";
+import SwiftFoliosModal from "../CustomComponents/SwiftFoliosModal/SwiftFoliosModal";
+
 import playButton from "../../assets/play-button.png";
 
-import "../../css/SwiftFoliosReserch/SwiftFoliosResearch.css";
+// import "../../css/SwiftFoliosReserch/SwiftFoliosResearch.css";
+import "../../css/BackOffice/BackOffice.css";
+import BackOfficeMainDisplayEditForm from "./BackOfficeMainDisplayEditForm";
 
 const accountCode = "BRC4897812";
 
-const OriginalResearch2Main = ({ postDetails }) => {
+const BackOfficeMainDisplay = ({ postDetails }) => {
+  console.log("play-button", playButton);
+
   const [visitedItems, setVisitedItems] = useState(new Set());
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
     const fetchVisitedData = async () => {
@@ -58,6 +66,10 @@ const OriginalResearch2Main = ({ postDetails }) => {
       console.error("Error updating visit status:", error);
     }
   };
+  const handleEditClick = (post) => {
+    setSelectedPost(post);
+    setIsEditModalOpen(true);
+  };
 
   const handleFileDownload = async (fileUrl) => {
     try {
@@ -82,15 +94,16 @@ const OriginalResearch2Main = ({ postDetails }) => {
     (a, b) => new Date(a.date) - new Date(b.date)
   );
   const [oldestPost, ...remainingPosts] = sortedDetails;
+  console.log("rem", remainingPosts);
 
   return (
     <div>
       {remainingPosts.length > 0 && (
-        <div className="swift-folios-research-updated-post-container">
+        <div className="swift-folios-back-office-update-post-container">
           {remainingPosts.map((detail) => (
             <div
               key={detail.id}
-              className={`swift-folios-research-row2 ${
+              className={`swift-folios-back-office-research-row2 ${
                 detail.video_url ? "with-video" : ""
               }`}
               onClick={() => handleVisitStatus(detail.id)}
@@ -100,20 +113,28 @@ const OriginalResearch2Main = ({ postDetails }) => {
                   : "#FAFAFA",
               }}
             >
-              <div className="swift-folios-research-updated-post-sub-container">
-                <div className="swift-folios-research-row2-date">
-                  Posted On
+              <div className="swift-folios-back-office-row2-sub-container">
+                <div className="swift-folios-research-back-office-row2-date">
                   {new Date(detail.date).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
                   })}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditClick(detail);
+                    }}
+                    className="swift-folios-research-back-office-button"
+                  >
+                    Edit
+                  </button>
                 </div>
-                <div className="swift-folios-research-row2-header">
+                <div className="swift-folios-research-back-office-row2-header">
                   {detail.heading}
                 </div>
                 <div
-                  className="swift-folios-research-row2-text"
+                  className="swift-folios-research-back-office-row2-text"
                   dangerouslySetInnerHTML={{ __html: detail.description }}
                 ></div>
 
@@ -179,12 +200,11 @@ const OriginalResearch2Main = ({ postDetails }) => {
           ))}
         </div>
       )}
-
-      <div className="swift-folios-research-original-post-container">
+      <div className="swift-folios-back-office-original-post-container">
         {oldestPost && (
           <div
             key={oldestPost.id}
-            className={`swift-folios-research-row2 ${
+            className={`swift-folios-back-office-research-row2 ${
               oldestPost.video_url ? "with-video" : ""
             }`}
             onClick={() => handleVisitStatus(oldestPost.id)}
@@ -194,20 +214,28 @@ const OriginalResearch2Main = ({ postDetails }) => {
                 : "#FAFAFA",
             }}
           >
-            <div className="swift-folios-research-original-post-sub-container">
-              <div className="swift-folios-research-row2-date">
-                Posted On
-                {new Date(oldestPost.date).toLocaleDateString("en-US", {
+            <div className="swift-folios-back-office-row2-sub-container">
+              <div className="swift-folios-research-back-office-row2-date">
+                <span>Posted On {new Date(oldestPost.date).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
-                })}
+                })}</span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditClick(oldestPost);
+                  }}
+                  className="swift-folios-research-back-office-button"
+                >
+                  Edit
+                </button>
               </div>
               <div className="swift-folios-research-row2-header">
                 {oldestPost.heading}
               </div>
               <div
-                className="swift-folios-research-row2-text"
+                className="swift-folios-research-back-office-row2-text"
                 dangerouslySetInnerHTML={{ __html: oldestPost.description }}
               ></div>
 
@@ -271,8 +299,18 @@ const OriginalResearch2Main = ({ postDetails }) => {
           </div>
         )}
       </div>
+      {isEditModalOpen && (
+        <SwiftFoliosModal className="swift-folios-back-office-edit-post-modal">
+          <div className="modal">
+            <BackOfficeMainDisplayEditForm
+              postData={selectedPost}
+              onClose={() => setIsEditModalOpen(false)}
+            />
+          </div>
+        </SwiftFoliosModal>
+      )}
     </div>
   );
 };
 
-export default OriginalResearch2Main;
+export default BackOfficeMainDisplay;

@@ -1,0 +1,111 @@
+body{
+    font-family: 'Open Sans',sans-serif;
+    font-size: 12px;
+}
+.swift-folios-research-back-office-main-header{
+    font-weight: 700;
+    font-size: 16px;
+}
+.swift-folios-research-back-office-container{
+    border: 1px solid #E8E8E8;
+    border-radius: 15px;
+    width: 910px;
+    padding: 10px;
+}
+.swift-folios-research-back-office-sub-container{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+}
+.swift-folios-research-back-office-button{
+    width: 100px;
+    cursor: pointer;
+    height: 35px;
+    background-color: #e8e8e8;
+    border: none;
+    border-radius: 57px;
+    font-weight: 600;
+    opacity: 0px;
+    letter-spacing: -5%;
+    line-height: 16px;
+}
+.swift-folios-research-back-office-row1{
+    display: flex;
+    gap: 10px;
+}
+.swift-folios-back-office-update-post-container{
+    overflow-y: auto;
+    height: 147px;
+    max-height: 220px;
+    width: 870px;
+    
+}
+.swift-folios-back-office-research-row2{
+    height: 147px;
+    max-height:220px ;
+}
+.swift-folios-research-back-office-row2-date{
+    font-size: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.swift-folios-back-office-research-row2.with-video{
+    width: 800px;
+    display: flex;
+    min-height: 220px;
+    padding: 10px;
+}
+.swift-folios-research-back-office-row2-date > span{
+    font-style: italic;
+    
+}
+.swift-folios-back-office-row2-sub-container{
+    width: 414px;
+}
+
+.swift-folios-back-office-edit-post-modal,.swift-folios-back-office-edit-stock-modal,.swift-folios-back-office-update-post-modal{
+    padding: 0px 10px !important;
+}
+
+.modal{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    width: 95vw;
+    height: 100vh;
+    background-color: white;
+}
+.swift-folios-research-back-office-row3{
+    font-size: 10px;
+}
+
+.swift-folios-research-row3-container > .swift-folios-research-back-office-fund-name {
+    font-weight: 600;
+}
+.swift-folios-research-back-office-fund-price {
+    font-weight: 700;
+    line-height: 15px;
+    letter-spacing: -5%;
+}
+.swift-folios-research-back-office-fund-price {
+    font-weight: 700;
+    line-height: 15px;
+    letter-spacing: -5%;
+}
+.swift-folios-research-back-office-fund-change-container {
+    display: flex
+;
+    justify-content: space-between;
+}
+.swift-folios-research-back-office-value-change,
+.swift-folios-research-back-office-per-change {
+    color: #00d72f;
+}
+
+.swift-folios-research-back-office-row3-container{
+    display: flex;
+    gap: 5px;
+    font-size: 10px;
+}

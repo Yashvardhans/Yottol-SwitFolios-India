@@ -94,7 +94,7 @@ const ImageEditor = ({ onSave }) => {
           paddingLeft: "20px",
         }}
       >
-        <input type="file" accept="image/*" onChange={handleImageUpload} style={{ marginBottom: "20px" }} />
+        <input type="file" accept="image/*" onChange={handleImageUpload} style={{ marginBottom: "20px" }} onClick={(e) => e.stopPropagation()}/>
         <div style={{ marginBottom: "20px" }}>
           <label>
             Zoom:
