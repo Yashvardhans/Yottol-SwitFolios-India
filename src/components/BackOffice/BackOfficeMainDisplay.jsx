@@ -5,6 +5,7 @@ import ServerRequest from "../../utils/ServerRequest";
 import SwiftFoliosModal from "../CustomComponents/SwiftFoliosModal/SwiftFoliosModal";
 
 import playButton from "../../assets/play-button.png";
+import downArrow from "../../assets/icons/down_arrow.svg";
 
 // import "../../css/SwiftFoliosReserch/SwiftFoliosResearch.css";
 import "../../css/BackOffice/BackOffice.css";
@@ -18,6 +19,19 @@ const BackOfficeMainDisplay = ({ postDetails }) => {
   const [visitedItems, setVisitedItems] = useState(new Set());
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [expandedItems, setExpandedItems] = useState(new Set());
+
+  const handleToggleExpand = (itemId) => {
+    setExpandedItems((prevExpanded) => {
+      const updated = new Set(prevExpanded);
+      if (updated.has(itemId)) {
+        updated.delete(itemId);
+      } else {
+        updated.add(itemId);
+      }
+      return updated;
+    });
+  };
 
   useEffect(() => {
     const fetchVisitedData = async () => {
@@ -115,11 +129,14 @@ const BackOfficeMainDisplay = ({ postDetails }) => {
             >
               <div className="swift-folios-back-office-row2-sub-container">
                 <div className="swift-folios-research-back-office-row2-date">
-                  {new Date(detail.date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+                  <span>
+                    Posted On{" "}
+                    {new Date(oldestPost.date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -135,7 +152,11 @@ const BackOfficeMainDisplay = ({ postDetails }) => {
                 </div>
                 <div
                   className="swift-folios-research-back-office-row2-text"
-                  dangerouslySetInnerHTML={{ __html: detail.description }}
+                  dangerouslySetInnerHTML={{
+                    __html: expandedItems.has(detail.id)
+                      ? detail.description
+                      : `${detail.description.slice(0, 150)}...`,
+                  }}
                 ></div>
 
                 {detail.file_url && (
@@ -151,6 +172,23 @@ const BackOfficeMainDisplay = ({ postDetails }) => {
                     </button>
                   </div>
                 )}
+                <div className="back-office-read-more-content">
+                  <button
+                    className="swift-folios-back-office-read-more-button"
+                    onClick={() => handleToggleExpand(detail.id)}
+                  >
+                    <img
+                      src={downArrow}
+                      alt=""
+                      className={`down-arrow-icon ${
+                        expandedItems.has(detail.id) ? "rotate" : ""
+                      }`}
+                    />
+                  </button>
+                  <span>
+                    {expandedItems.has(detail.id) ? "Read Less" : "Read Full"}
+                  </span>
+                </div>
               </div>
               {detail.video_url && (
                 <div
@@ -216,11 +254,14 @@ const BackOfficeMainDisplay = ({ postDetails }) => {
           >
             <div className="swift-folios-back-office-row2-sub-container">
               <div className="swift-folios-research-back-office-row2-date">
-                <span>Posted On {new Date(oldestPost.date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}</span>
+                <span>
+                  Posted On{" "}
+                  {new Date(oldestPost.date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -236,7 +277,11 @@ const BackOfficeMainDisplay = ({ postDetails }) => {
               </div>
               <div
                 className="swift-folios-research-back-office-row2-text"
-                dangerouslySetInnerHTML={{ __html: oldestPost.description }}
+                dangerouslySetInnerHTML={{
+                  __html: expandedItems.has(oldestPost.id)
+                    ? oldestPost.description
+                    : `${oldestPost.description.slice(0, 150)}...`,
+                }}
               ></div>
 
               {oldestPost.file_url && (
@@ -252,6 +297,23 @@ const BackOfficeMainDisplay = ({ postDetails }) => {
                   </button>
                 </div>
               )}
+              <div className="back-office-read-more-content">
+                  <button
+                    className="swift-folios-back-office-read-more-button"
+                    onClick={() => handleToggleExpand(oldestPost.id)}
+                  >
+                    <img
+                      src={downArrow}
+                      alt=""
+                      className={`down-arrow-icon ${
+                        expandedItems.has(oldestPost.id) ? "rotate" : ""
+                      }`}
+                    />
+                  </button>
+                  <span>
+                    {expandedItems.has(oldestPost.id) ? "Read Less" : "Read Full"}
+                  </span>
+                </div>
             </div>
             {oldestPost.video_url && (
               <div

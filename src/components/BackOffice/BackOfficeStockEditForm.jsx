@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import StockSearch from "../CustomComponents/StockSearch/StockSearch";
 import CustomButton from "../CustomComponents/CustomButton/CustomButton";
+import Pulse from "../CustomComponents/Loader/Pulse";
 import { Alert } from "../CustomComponents/CustomAlert/CustomAlert";
 import ServerRequest from "../../utils/ServerRequest";
 import "./BackOfficeStockEditForm.css";
 
-const BackOfficeStockEditForm = ({ postId,onClose }) => {
+const BackOfficeStockEditForm = ({ postId, onClose }) => {
   const [singleStockSelections, setSingleStockSelections] = useState([]);
   const [relatedStockSelections, setRelatedStockSelections] = useState([]);
   const [errors, setErrors] = useState({});
@@ -60,7 +61,9 @@ const BackOfficeStockEditForm = ({ postId,onClose }) => {
   };
 
   const handleRemoveStock = (stock) => {
-    setRelatedStockSelections(relatedStockSelections.filter((s) => s !== stock));
+    setRelatedStockSelections(
+      relatedStockSelections.filter((s) => s !== stock)
+    );
     setSingleStockSelections(singleStockSelections.filter((s) => s !== stock));
   };
 
@@ -88,6 +91,7 @@ const BackOfficeStockEditForm = ({ postId,onClose }) => {
       });
       if (response && response.message === "Stock updated successfully") {
         showSuccess("Stock updated successfully");
+        onClose()
       } else {
         showError("Failed to update stock");
       }
@@ -101,56 +105,77 @@ const BackOfficeStockEditForm = ({ postId,onClose }) => {
 
   return (
     <div>
-      <div className="back-office-stock-edit-header">
-      <h2>Edit Stock Information</h2>
-      <button className="close-modal" onClick={onClose}>✖</button>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <div className="back-office-stock-container">
-          <label className="stock-label">Select Stock</label>
-          <div className="stock-container"> {/* Wrap StockSearch in stock-container */}
-            <StockSearch handleSelect={handleSingleStockSelection} />
-          </div>
-          <div className="selected-stocks">
-            {singleStockSelections.length > 0 &&
-              singleStockSelections.map((stock, index) => (
-                <div key={index} className="selected-stock-item">
-                  <span>{stock}</span>
-                  <button
-                    type="button"
-                    className="remove-stock-button"
-                    onClick={() => handleRemoveStock(stock)}
-                  >
-                    ✖
-                  </button>
-                </div>
-              ))}
-          </div>
-          {errors.singleStock && <p className="error-text">{errors.singleStock}</p>}
+      {loading ? (
+        <div className="swift-folios-research-back-office-loader">
+          <p>Loading</p>
+          <Pulse />
         </div>
-        <div className="back-office-stock-container">
-          <label className="stock-label">Select Related Stock</label>
-          <div className="stock-container"> {/* Wrap StockSearch in stock-container */}
-            <StockSearch handleSelect={handleRelatedStockSelection} />
+      ) : (
+        <>
+          <div className="back-office-stock-edit-header">
+            <h4>Edit Stock Information</h4>
+            <button className="close-modal" onClick={onClose}>
+              ✖
+            </button>
           </div>
-          <div className="selected-stocks">
-            {relatedStockSelections.length > 0 &&
-              relatedStockSelections.map((stock, index) => (
-                <div key={index} className="selected-stock-item">
-                  <span>{stock}</span>
-                  <button
-                    type="button"
-                    className="remove-stock-button"
-                    onClick={() => handleRemoveStock(stock)}
-                  >
-                    ✖
-                  </button>
-                </div>
-              ))}
-          </div>
-        </div>
-        <CustomButton type="submit" text={loading ? "Saving..." : "Save Changes"} />
-      </form>
+          <form onSubmit={handleSubmit}>
+            <div className="back-office-stock-container">
+              <label className="stock-label">Select Stock</label>
+              <div className="stock-container">
+                {" "}
+                {/* Wrap StockSearch in stock-container */}
+                <StockSearch handleSelect={handleSingleStockSelection} />
+              </div>
+              <div className="selected-stocks">
+                {singleStockSelections.length > 0 &&
+                  singleStockSelections.map((stock, index) => (
+                    <div key={index} className="selected-stock-item">
+                      <span>{stock}</span>
+                      <button
+                        type="button"
+                        className="remove-stock-button"
+                        onClick={() => handleRemoveStock(stock)}
+                      >
+                        ✖
+                      </button>
+                    </div>
+                  ))}
+              </div>
+              {errors.singleStock && (
+                <p className="error-text">{errors.singleStock}</p>
+              )}
+            </div>
+            <div className="back-office-stock-container">
+              <label className="stock-label">Select Related Stock</label>
+              <div className="stock-container">
+                {" "}
+                {/* Wrap StockSearch in stock-container */}
+                <StockSearch handleSelect={handleRelatedStockSelection} />
+              </div>
+              <div className="selected-stocks">
+                {relatedStockSelections.length > 0 &&
+                  relatedStockSelections.map((stock, index) => (
+                    <div key={index} className="selected-stock-item">
+                      <span>{stock}</span>
+                      <button
+                        type="button"
+                        className="remove-stock-button"
+                        onClick={() => handleRemoveStock(stock)}
+                      >
+                        ✖
+                      </button>
+                    </div>
+                  ))}
+              </div>
+            </div>
+            <CustomButton
+              type="submit"
+              text="Save Changes"
+              classname="swift-folios-research-back-office-form-submit-button"
+            />
+          </form>
+        </>
+      )}
     </div>
   );
 };

@@ -35,19 +35,9 @@ const BackOfficeDisplay = ({ fundData }) => {
     };
 
     fetchData();
-  }, []);
+  }, [allData]);
 
-  const handleToggleExpand = (itemId) => {
-    setExpandedItems((prevExpanded) => {
-      const updated = new Set(prevExpanded);
-      if (updated.has(itemId)) {
-        updated.delete(itemId);
-      } else {
-        updated.add(itemId);
-      }
-      return updated;
-    });
-  };
+  
 
   const handleUpdateClick = (post) => {
     setSelectedPost(post);
@@ -60,8 +50,8 @@ const BackOfficeDisplay = ({ fundData }) => {
   };
 
   const handleCloseModal = (e) => {
-    e.stopPropagation(); 
-    e.preventDefault()
+    e?.stopPropagation(); 
+    e?.preventDefault()
     setIsUpdateModalOpen(false);
     setIsEditStockModalOpen(false);
     setSelectedPost(null);

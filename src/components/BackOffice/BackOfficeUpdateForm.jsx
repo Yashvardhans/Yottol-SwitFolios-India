@@ -17,7 +17,7 @@ import Pulse from "../CustomComponents/Loader/Pulse";
 
 import "./BackOfficeUpdateForm.css";
 
-const BackOfficeUpdateForm = ({ postData,onClose }) => {
+const BackOfficeUpdateForm = ({ postData, onClose }) => {
   const navigate = useNavigate();
   const [type, setType] = useState("");
   const [heading, setHeading] = useState("");
@@ -88,9 +88,6 @@ const BackOfficeUpdateForm = ({ postData,onClose }) => {
     const file = e.target.files[0];
 
     if (!file) return;
-
-    console.log("Selected attachment file:", file);
-    console.log("fiiiile", e.target.files);
 
     if (file.size > 10 * 1024 * 1024) {
       showError("Attachment size exceeds 10MB");
@@ -190,11 +187,12 @@ const BackOfficeUpdateForm = ({ postData,onClose }) => {
 
       if (request?.message === "Data added successfully") {
         showError("Form submitted successfully");
+        onClose();
         navigate("/research2");
       }
     } catch (error) {
       showError("Error submitting the form");
-      console.error(error);
+      console.error("upfe", error);
     } finally {
       setLoading(false);
     }
@@ -211,7 +209,15 @@ const BackOfficeUpdateForm = ({ postData,onClose }) => {
         <form>
           <div className="back-office-update-form-header">
             <div></div>
-            <button className="form-close-button" onClick={onClose}>✖</button>
+            <button
+              className="form-close-button"
+              onClick={(e) => {
+                e.stopPropagation(); 
+                onClose(e); 
+              }}
+            >
+              ✖
+            </button>
           </div>
           <div className="swift-folios-research-back-office-form-group">
             <CustomDropdown

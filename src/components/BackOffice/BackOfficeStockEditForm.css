@@ -6,7 +6,9 @@
 .back-office-stock-edit-header>button{
   background:none;
   border: none;
+  cursor: pointer;
 }
+
 
 .stock-container .stock__search__icons__wrapper {
     height: 40px;
@@ -207,4 +209,14 @@
   .remove-stock-button:hover {
     color: #6c6767;
     border-color:#6c6767 ;
+  }
+
+  .swift-folios-research-back-office-form-submit-button {
+    border-radius: 35px;
+    backdrop-filter: blur(2px);
+    width: 122px;
+    height: 35px;
+    flex-shrink: 0;
+    letter-spacing: -0.7px;
+    cursor: pointer;
   }
