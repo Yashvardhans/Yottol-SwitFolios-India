@@ -10,7 +10,7 @@ const OriginalResearch2HorizontalDisplay = ({stockCode}) => {
 
     return (
         <div>
-            <div className="swift-folios-research-row1">
+            <div className="swift-folios-research-front-row1">
               <div className="swift-folios-research-fund-name">{stockCode}</div>
               <div className="swift-folios-research-fund-price">
                 {stockData?.last_traded_price}

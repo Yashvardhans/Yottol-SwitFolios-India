@@ -7,6 +7,7 @@ import SwiftFoliosModal from "../CustomComponents/SwiftFoliosModal/SwiftFoliosMo
 import ImageEditor from "../CustomComponents/ImageEditorComponent/ImageEditor";
 import CustomDropdown from "../CustomComponents/CustomDropdown/CustomDropdown";
 import CustomButton from "../CustomComponents/CustomButton/CustomButton";
+import CustomBodyComponent from "../CustomComponents/CustomBodyComponent/CustomBodyComponent";
 import CustomSearchableDropdown from "../CustomComponents/CustomSearchableDropdown/CustomSearchableDropdown";
 import CustomInputError from "../CustomComponents/CustomInput/CustomInputError";
 import { Alert } from "../CustomComponents/CustomAlert/CustomAlert";
@@ -39,7 +40,6 @@ const SwiftFoliosResearchForm = () => {
       TitleText: "Warning",
       Message: msg,
       BandColor: "#e51a4b",
-
       AutoClose: {
         Active: true,
         Line: true,
@@ -50,25 +50,21 @@ const SwiftFoliosResearchForm = () => {
   };
 
   const uniqueId = `${Date.now()}`;
-  console.log("Generated ID:", uniqueId);
   function generateUniqueId() {
     const timestamp = `${Date.now()}`;
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let randomPart = '';
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let randomPart = "";
     for (let i = 0; i < 5; i++) {
       randomPart += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    const combined = (timestamp + randomPart).split('').sort(() => Math.random() - 0.5).join('');
-    console.log("Generated ID:", combined);
+    const combined = (timestamp + randomPart).split("").sort(() => Math.random() - 0.5).join("");
     return combined;
   }
-  
+
   const postId = generateUniqueId();
-  console.log("postId",postId);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-
     if (videoURL) {
       showError("You can only upload a video file or enter a video URL, not both.");
       return;
@@ -79,25 +75,19 @@ const SwiftFoliosResearchForm = () => {
     }
     setVideoFile(file);
   };
+
   const handleAttachmentChange = (e) => {
     const file = e.target.files[0];
-
     if (!file) return;
-
-    console.log("Selected attachment file:", file);
-    console.log("fiiiile", e.target.files);
-
     if (file.size > 10 * 1024 * 1024) {
       showError("Attachment size exceeds 10MB");
       return;
     }
-
     setAttachments(file);
   };
 
   const validateForm = () => {
     const newErrors = {};
-
     if (!type) newErrors.type = "Type is required.";
     if (!heading.trim()) newErrors.heading = "Heading is required.";
     if (!body.trim()) newErrors.body = "Body content is required.";
@@ -105,7 +95,6 @@ const SwiftFoliosResearchForm = () => {
       newErrors.singleStock = "Please select at least one stock.";
     if (type === "video" && !videoFile && !videoURL)
       newErrors.video = "Video file or URL is required.";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -120,8 +109,6 @@ const SwiftFoliosResearchForm = () => {
   };
 
   const handleRelatedStockSelection = (selectedStock) => {
-    console.log("se", selectedStock);
-
     if (relatedStockSelections.length >= 3) {
       showError("You can select a maximum of 3 stocks.");
       return;
@@ -142,14 +129,11 @@ const SwiftFoliosResearchForm = () => {
   };
 
   const handleRemoveStock = (stock) => {
-    setRelatedStockSelections(
-      relatedStockSelections.filter((s) => s !== stock)
-    );
+    setRelatedStockSelections(relatedStockSelections.filter((s) => s !== stock));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) return;
     if (type === "video" && videoFile && videoURL) {
       showError("Please provide either a video file or a video URL, not both.");
       return;
@@ -162,39 +146,33 @@ const SwiftFoliosResearchForm = () => {
       showError("Please select a type.");
       return;
     }
-
     if (!heading.trim()) {
       showError("Please enter a heading.");
       return;
     }
-
     if (!body.trim()) {
       showError("Please enter content for the body.");
       return;
     }
-
     if (type === "video" && !videoFile && !videoURL) {
       showError("Please provide either a video file or a video URL.");
       return;
     }
-
     if (type === "post" && !attachments) {
       showError("Please upload a PDF.");
       return;
     }
-
     if (singleStockSelections.length === 0) {
       showError("Please select a single stock.");
       return;
     }
-
     if (relatedStockSelections.length === 0) {
       showError("Please select at least one related stock.");
       return;
     }
     const currentDate = new Date().toISOString().split("T")[0];
     const formData = new FormData();
-    formData.append("postId",postId)
+    formData.append("postId", postId);
     formData.append("id", uniqueId);
     formData.append("body", body);
     formData.append("date", JSON.stringify(currentDate));
@@ -211,7 +189,6 @@ const SwiftFoliosResearchForm = () => {
     if (thumbnailFile) {
       formData.append("thumbnailFile", thumbnailFile);
     }
-
     try {
       setLoading(true);
       const request = await ServerRequest({
@@ -222,7 +199,6 @@ const SwiftFoliosResearchForm = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-
       if (request?.message === "Data added successfully") {
         showError("Form submitted successfully");
         navigate("/research2");
@@ -243,7 +219,7 @@ const SwiftFoliosResearchForm = () => {
           <Pulse />
         </div>
       ) : (
-        <form >
+        <form>
           <div className="swift-folios-research-form-group">
             <CustomDropdown
               label={"Type"}
@@ -252,226 +228,173 @@ const SwiftFoliosResearchForm = () => {
               onChange={(value) => setType(value)}
             />
           </div>
-
-          {(type === "post" || type === "video") && (
-            <>
-              <div className="swift-folios-research-form-stock-container">
-                <label htmlFor="" className="stock-label">
-                  Select Stock
-                </label>
-                <StockSearch
-                  handleSelect={(s) => {
-                    handleSingleStockSelection(s);
-                  }}
-                />
-                <div className="selected-stocks">
-                  {singleStockSelections.length > 0 && (
-                    <div className="selected-stocks">
-                      {singleStockSelections.map((stock, index) => (
-                        <div key={index} className="selected-stock-item">
-                          <span>{stock}</span>
-                          <button
-                            className="remove-stock-button"
-                            onClick={() => handleRemoveStock(stock)}
-                          >
-                            ✖
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+          <div className="form-scrollable-content">
+            {(type === "post" || type === "video") && (
+              <>
+                <div className="swift-folios-research-form-stock-container">
+                  <label htmlFor="" className="stock-label">
+                    Select Stock
+                  </label>
+                  <StockSearch
+                    handleSelect={(s) => {
+                      handleSingleStockSelection(s);
+                    }}
+                  />
+                  <div className="selected-stocks">
+                    {singleStockSelections.length > 0 && (
+                      <div className="selected-stocks">
+                        {singleStockSelections.map((stock, index) => (
+                          <div key={index} className="selected-stock-item">
+                            <span>{stock}</span>
+                            <button
+                              className="remove-stock-button"
+                              onClick={() => handleRemoveStock(stock)}
+                            >
+                              ✖
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {errors.singleStock && (
+                    <p className="error-text">{errors.singleStock}</p>
                   )}
                 </div>
-                {errors.singleStock && (
-                  <p className="error-text">{errors.singleStock}</p>
-                )}
-              </div>
-
-              <div className="swift-folios-research-form-group">
-                <label
-                  htmlFor="heading"
-                  className="swift-folios-research-form-text"
-                >
-                  Heading
-                </label>
-                <CustomInputError
-                  type="text"
-                  id="heading"
-                  value={heading}
-                  onInputChange={(name, inputValue) => setHeading(inputValue)}
-                />
-                {errors.heading && (
-                  <p className="error-text">{errors.heading}</p>
-                )}
-              </div>
-
-              <div className="swift-folios-research-form-group react-quill-group">
-                <label
-                  htmlFor="body"
-                  className="swift-folios-research-form-text"
-                >
-                  Body
-                </label>
-                <ReactQuill
+                <div className="swift-folios-research-form-group">
+                  <CustomInputError
+                    labelText="Heading"
+                    type="text"
+                    name="heading"
+                    value={heading}
+                    classnameLabel="swift-folios-research-form-text"
+                  classnameInput="swift-folios-research-form-text-input"
+                    onInputChange={(name, value) => setHeading(value)}
+                    error={errors.heading}
+                  />
+                </div>
+                <CustomBodyComponent
+                  label="Body"
                   value={body}
                   onChange={setBody}
-                  modules={{
-                    toolbar: [
-                      [{ header: "1" }, { header: "2" }, { font: [] }],
-                      [{ list: "ordered" }, { list: "bullet" }],
-                      ["bold", "italic", "underline"],
-                      ["link"],
-                      [{ size: ["small", false, "large", "huge"] }],
-                    ],
-                  }}
-                  formats={[
-                    "header",
-                    "font",
-                    "list",
-                    "bold",
-                    "italic",
-                    "underline",
-                    "link",
-                    "size",
-                  ]}
-                  style={{
-                    height: "150px",
-                    width: "60vw",
-                    marginBottom: "20px",
-                  }}
+                  error={errors.body}
+                  containerClassName="swift-folios-research-form-group react-quill-group"
+                  labelClassName="swift-folios-research-form-text"
+                  editorClassName="react-quill"
+                  errorClassName="error-text error-body"
                 />
-              </div>
-              {errors.body && (
-                <p className="error-text error-body">{errors.body}</p>
-              )}
-              <div className="swift-folios-research-form-stock-container">
-                <label htmlFor="" className="stock-label">
-                  Select Related Stock
-                </label>
-                <StockSearch
-                  handleSelect={(s) => {
-                    handleRelatedStockSelection(s);
-                  }}
-                />
-                <div className="selected-stocks">
-                  {relatedStockSelections.length > 0 && (
-                    <div className="selected-stocks">
-                      {relatedStockSelections.map((stock, index) => (
-                        <div key={index} className="selected-stock-item">
-                          <span>{stock}</span>
-                          <button
-                            className="remove-stock-button"
-                            onClick={() => handleRemoveStock(stock)}
-                          >
-                            ✖
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                <div className="swift-folios-research-form-stock-container">
+                  <label htmlFor="" className="stock-label">
+                    Select Related Stock
+                  </label>
+                  <StockSearch
+                    handleSelect={(s) => {
+                      handleRelatedStockSelection(s);
+                    }}
+                  />
+                  <div className="selected-stocks">
+                    {relatedStockSelections.length > 0 && (
+                      <div className="selected-stocks">
+                        {relatedStockSelections.map((stock, index) => (
+                          <div key={index} className="selected-stock-item">
+                            <span>{stock}</span>
+                            <button
+                              className="remove-stock-button"
+                              onClick={() => handleRemoveStock(stock)}
+                            >
+                              ✖
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-
-              <div className="swift-folios-research-form-group">
-                <div className="swift-folios-research-file-group">
-                <label
-                  htmlFor="attachments"
-                  className="swift-folios-research-form-text"
-                >
-                  Upload Pdf
-                </label>
-                <input
-                  type="file"
-                  id="attachments"
-                  accept=".pdf"
-                  onChange={handleAttachmentChange}
-                  style={{ display: "none", cursor: "pointer" }}
-                />
-                {attachments && (
-                  <div className="swift-folios-research-file-display">
-                  <p className="uploaded-file-name">{attachments.name}</p>
-                  <button
-                    className="remove-file-button"
-                    onClick={() => setAttachments(null)}
-                  >
-                    ✖
-                  </button>
-                </div>
-                )}
-                </div>
-              </div>
-
-              {type === "video" && (
-                <>
-                  <div className="swift-folios-research-form-group">
-                    <div className="swift-folios-research-file-group">
-                    <label
-                      htmlFor="videoFile"
-                      className="swift-folios-research-form-text"
-                    >
-                      Upload Video
+                <div className="swift-folios-research-form-group">
+                  <div className="swift-folios-research-file-group">
+                    <label htmlFor="attachments" className="swift-folios-research-form-text">
+                      Upload Pdf
                     </label>
                     <input
                       type="file"
-                      id="videoFile"
-                      accept="video/*"
-                      onChange={handleFileChange}
+                      id="attachments"
+                      accept=".pdf"
+                      onChange={handleAttachmentChange}
                       style={{ display: "none", cursor: "pointer" }}
                     />
-                    {videoFile && (
+                    {attachments && (
                       <div className="swift-folios-research-file-display">
-                      <p className="uploaded-file-name">{videoFile.name}</p>
+                        <p className="uploaded-file-name">{attachments.name}</p>
+                        <button
+                          className="remove-file-button"
+                          onClick={() => setAttachments(null)}
+                        >
+                          ✖
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {type === "video" && (
+                  <>
+                    <div className="swift-folios-research-form-group">
+                      <div className="swift-folios-research-file-group">
+                        <label htmlFor="videoFile" className="swift-folios-research-form-text">
+                          Upload Video
+                        </label>
+                        <input
+                          type="file"
+                          id="videoFile"
+                          accept="video/*"
+                          onChange={handleFileChange}
+                          style={{ display: "none", cursor: "pointer" }}
+                        />
+                        {videoFile && (
+                          <div className="swift-folios-research-file-display">
+                            <p className="uploaded-file-name">{videoFile.name}</p>
+                            <button
+                              className="remove-file-button"
+                              onClick={() => setVideoFile(null)}
+                            >
+                              ✖
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="swift-folios-research-form-group">
+                      <CustomInputError
+                        labelText="Video URL"
+                        type="text"
+                        name="videoURL"
+                        value={videoURL}
+                        onInputChange={(name, value) => setVideoURL(value)}
+                        error={errors.video}
+                      />
+                    </div>
+                    <div className="swift-folios-research-form-group">
                       <button
-                        className="remove-file-button"
-                        onClick={() => setVideoFile(null)}
+                        type="button"
+                        onClick={() => setIsImageEditorOpen(true)}
+                        className="swift-folios-research-back-office-form-image-edit-button"
                       >
-                        ✖
+                        Upload Thumbnail
                       </button>
                     </div>
-                    )}
-                    </div>
-                  </div>
-
-                  <div className="swift-folios-research-form-group">
-                    <label
-                      htmlFor="videoURL"
-                      className="swift-folios-research-form-text"
-                    >
-                      Video URL
-                    </label>
-                    <CustomInputError
-                      type="text"
-                      id="videoURL"
-                      value={videoURL}
-                      onInputChange={(name, inputValue) =>
-                        setVideoURL(inputValue)
-                      }
-                    />
-                    {errors.video && (
-                      <p className="error-text">{errors.video}</p>
-                    )}
-                  </div>
-                  <div className="swift-folios-research-form-group">
-                    <CustomButton
-                      text="Edit Image"
-                      onClick={() => setIsImageEditorOpen(true)}
-                      classname="swift-folios-research-form-image-edit-button"
-                    />
-                  </div>
-                </>
-              )}
-
-              <div className="swift-folios-research-form-group">
-                <CustomButton
-                  text="Submit"
-                  classname="swift-folios-research-form-submit-button"
-                  onClick={handleSubmit}
-                />
-              </div>
-            </>
-          )}
+                  </>
+                )}
+                <div className="swift-folios-research-form-group">
+                  <CustomButton
+                    text="Submit"
+                    classname="swift-folios-research-form-submit-button"
+                    onClick={handleSubmit}
+                  />
+                </div>
+              </>
+            )}
+          </div>
         </form>
       )}
-
       {isImageEditorOpen && (
         <SwiftFoliosModal closeModal={() => setIsImageEditorOpen(false)}>
           <div className="swift-folios-research-form-image-editor-modal">

@@ -51,13 +51,26 @@ const BackOfficeStockEditForm = ({ postId, onClose }) => {
   };
 
   const handleRelatedStockSelection = (selectedStock) => {
-    if (relatedStockSelections.length >= 3) {
-      showError("You can select a maximum of 3 stocks.");
+    
+    if (singleStockSelections.includes(selectedStock)) {
+      showError("This stock is already selected as the main stock.");
       return;
     }
-    if (!relatedStockSelections.includes(selectedStock)) {
-      setRelatedStockSelections([...relatedStockSelections, selectedStock]);
+
+    
+    if (relatedStockSelections.includes(selectedStock)) {
+      showError("This stock is already selected as a related stock.");
+      return;
     }
+
+    
+    if (relatedStockSelections.length >= 3) {
+      showError("You can select a maximum of 3 related stocks.");
+      return;
+    }
+
+    
+    setRelatedStockSelections([...relatedStockSelections, selectedStock]);
   };
 
   const handleRemoveStock = (stock) => {
@@ -91,7 +104,7 @@ const BackOfficeStockEditForm = ({ postId, onClose }) => {
       });
       if (response && response.message === "Stock updated successfully") {
         showSuccess("Stock updated successfully");
-        onClose()
+        onClose();
       } else {
         showError("Failed to update stock");
       }
@@ -104,16 +117,16 @@ const BackOfficeStockEditForm = ({ postId, onClose }) => {
   };
 
   return (
-    <div>
+    <div className="swift-folios-research-back-office-stock-edit-form-container">
       {loading ? (
         <div className="swift-folios-research-back-office-loader">
           <p>Loading</p>
           <Pulse />
         </div>
       ) : (
-        <>
+        <div>
           <div className="back-office-stock-edit-header">
-            <h4>Edit Stock Information</h4>
+            <h4></h4>
             <button className="close-modal" onClick={onClose}>
               ✖
             </button>
@@ -122,8 +135,6 @@ const BackOfficeStockEditForm = ({ postId, onClose }) => {
             <div className="back-office-stock-container">
               <label className="stock-label">Select Stock</label>
               <div className="stock-container">
-                {" "}
-                {/* Wrap StockSearch in stock-container */}
                 <StockSearch handleSelect={handleSingleStockSelection} />
               </div>
               <div className="selected-stocks">
@@ -148,8 +159,6 @@ const BackOfficeStockEditForm = ({ postId, onClose }) => {
             <div className="back-office-stock-container">
               <label className="stock-label">Select Related Stock</label>
               <div className="stock-container">
-                {" "}
-                {/* Wrap StockSearch in stock-container */}
                 <StockSearch handleSelect={handleRelatedStockSelection} />
               </div>
               <div className="selected-stocks">
@@ -171,10 +180,10 @@ const BackOfficeStockEditForm = ({ postId, onClose }) => {
             <CustomButton
               type="submit"
               text="Save Changes"
-              classname="swift-folios-research-back-office-form-submit-button"
+              classname="swift-folios-research-back-office-form-submit-button stock-edit-submit-button"
             />
           </form>
-        </>
+        </div>
       )}
     </div>
   );

@@ -1,8 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
 
 .swift-folios-research-form-container {
+  
   height: auto;
-  width: 100vw;
+  width: 90vw;
   min-width: 30vw;
   font-family: "Open Sans", sans-serif;
   letter-spacing: -0.7px;
@@ -14,7 +15,29 @@
   flex-direction: column;
   gap: 15px;
 }
-
+.form-scrollable-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 70vh; 
+  overflow-y: auto;
+  
+}
+.form-scrollable-content::-webkit-scrollbar{
+  width: 8px;
+}
+.form-scrollable-content::-webkit-scrollbar-thumb{
+  border-radius: 6px;
+}
+.swift-folios-research-form-text {
+  font-weight: 600;
+  font-size: 12px;
+  color: #011627;
+  cursor: pointer;
+}
+.swift-folios-research-form-text-input{
+  font-size: 12px;
+}
 .swift-folios-research-form-submit-button {
   border-radius: 35px;
   backdrop-filter: blur(2px);

@@ -95,13 +95,20 @@ const OriginalResearch2Main = ({ postDetails }) => {
   const sortedDetails = [...postDetails].sort(
     (a, b) => new Date(a.date) - new Date(b.date)
   );
-  const [oldestPost, ...remainingPosts] = sortedDetails;
+  let reorderedDetails = [];
+  if (sortedDetails.length > 0) {
+    const oldest = sortedDetails[0];
+    const newest = sortedDetails[sortedDetails.length - 1];
+    const remaining = sortedDetails.slice(1, -1).reverse();
+
+    reorderedDetails = [newest, oldest, ...remaining];
+  }
 
   return (
     <div>
-      {remainingPosts.length > 0 && (
+      {reorderedDetails.length > 0 && (
         <div className="swift-folios-research-updated-post-container">
-          {remainingPosts.map((detail) => (
+          {reorderedDetails.map((detail) => (
             <div
               key={detail.id}
               className={`swift-folios-research-row2 ${
@@ -116,7 +123,7 @@ const OriginalResearch2Main = ({ postDetails }) => {
             >
               <div className="swift-folios-research-updated-post-sub-container">
                 <div className="swift-folios-research-row2-date">
-                  Posted On
+                  Posted On{" "}
                   {new Date(detail.date).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
@@ -131,7 +138,9 @@ const OriginalResearch2Main = ({ postDetails }) => {
                   dangerouslySetInnerHTML={{
                     __html: expandedItems.has(detail.id)
                       ? detail.description
-                      : `${detail.description.slice(0, 150)}...`,
+                      : `${detail.description.slice(0, 150)}${
+                          detail.description.length > 150 ? "..." : ""
+                        }`,
                   }}
                 ></div>
 
@@ -148,23 +157,25 @@ const OriginalResearch2Main = ({ postDetails }) => {
                     </button>
                   </div>
                 )}
-                <div className="back-office-read-more-content">
-                  <button
-                    className="swift-folios-back-office-read-more-button"
-                    onClick={() => handleToggleExpand(detail.id)}
-                  >
-                    <img
-                      src={downArrow}
-                      alt=""
-                      className={`down-arrow-icon ${
-                        expandedItems.has(detail.id) ? "rotate" : ""
-                      }`}
-                    />
-                  </button>
-                  <span>
-                    {expandedItems.has(detail.id) ? "Read Less" : "Read Full"}
-                  </span>
-                </div>
+                {detail.description.length > 150 && (
+                  <div className="back-office-read-more-content">
+                    <button
+                      className="swift-folios-back-office-read-more-button"
+                      onClick={() => handleToggleExpand(detail.id)}
+                    >
+                      <img
+                        src={downArrow}
+                        alt=""
+                        className={`down-arrow-icon ${
+                          expandedItems.has(detail.id) ? "rotate" : ""
+                        }`}
+                      />
+                    </button>
+                    <span>
+                      {expandedItems.has(detail.id) ? "Read Less" : "Read Full"}
+                    </span>
+                  </div>
+                )}
               </div>
               {detail.video_url && (
                 <div
@@ -187,11 +198,10 @@ const OriginalResearch2Main = ({ postDetails }) => {
                           backgroundSize: "cover",
                           filter: "blur(4px)",
                         }}
-                      ></div>
+                      />
                     }
                     playIcon={
                       <img
-                        id={detail.id}
                         src={playButton}
                         alt="Play"
                         style={{
@@ -214,119 +224,6 @@ const OriginalResearch2Main = ({ postDetails }) => {
           ))}
         </div>
       )}
-
-      <div className="swift-folios-research-original-post-container">
-        {oldestPost && (
-          <div
-            key={oldestPost.id}
-            className={`swift-folios-research-row2 ${
-              oldestPost.video_url ? "with-video" : ""
-            }`}
-            onClick={() => handleVisitStatus(oldestPost.id)}
-            style={{
-              backgroundColor: visitedItems.has(oldestPost.id)
-                ? "transparent"
-                : "#FAFAFA",
-            }}
-          >
-            <div className="swift-folios-research-original-post-sub-container">
-              <div className="swift-folios-research-row2-date">
-                Posted On
-                {new Date(oldestPost.date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </div>
-              <div className="swift-folios-research-row2-header">
-                {oldestPost.heading}
-              </div>
-              <div
-                className="swift-folios-research-row2-text"
-                dangerouslySetInnerHTML={{
-                  __html: expandedItems.has(oldestPost.id)
-                    ? oldestPost.description
-                    : `${oldestPost.description.slice(0, 150)}...`,
-                }}
-              ></div>
-
-              {oldestPost.file_url && (
-                <div className="swift-folios-research-file-container">
-                  <div className="swift-folios-research-file">
-                    <img src={downloadIcon} alt="file preview" />
-                  </div>
-                  <button
-                    onClick={() => handleFileDownload(oldestPost.file_url)}
-                    className="swift-folios-research-file-download-button"
-                  >
-                    Download
-                  </button>
-                </div>
-              )}
-              <div className="back-office-read-more-content">
-                <button
-                  className="swift-folios-back-office-read-more-button"
-                  onClick={() => handleToggleExpand(oldestPost.id)}
-                >
-                  <img
-                    src={downArrow}
-                    alt=""
-                    className={`down-arrow-icon ${
-                      expandedItems.has(oldestPost.id) ? "rotate" : ""
-                    }`}
-                  />
-                </button>
-                <span>
-                  {expandedItems.has(oldestPost.id) ? "Read Less" : "Read Full"}
-                </span>
-              </div>
-            </div>
-            {oldestPost.video_url && (
-              <div
-                key={oldestPost.id}
-                style={{
-                  position: "relative",
-                  width: "365px",
-                  height: "204px",
-                }}
-              >
-                <ReactPlayer
-                  url={oldestPost.video_url}
-                  light={
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        backgroundImage: `url(${oldestPost.thumbnail_url})`,
-                        backgroundSize: "cover",
-                        filter: "blur(4px)",
-                      }}
-                    ></div>
-                  }
-                  playIcon={
-                    <img
-                      id={oldestPost.id}
-                      src={playButton}
-                      alt="Play"
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        cursor: "pointer",
-                      }}
-                    />
-                  }
-                  controls
-                  playing={false}
-                  width="100%"
-                  height="100%"
-                />
-              </div>
-            )}
-          </div>
-        )}
-      </div>
     </div>
   );
 };

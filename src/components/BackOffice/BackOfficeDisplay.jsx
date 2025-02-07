@@ -70,7 +70,7 @@ const BackOfficeDisplay = ({ fundData }) => {
     <div className="swift-folios-research-back-office-main">
       <div className="swift-folios-research-back-office-main-header-container">
         <p className="swift-folios-research-back-office-main-header">
-          Original Research- SwiftResearch
+          Original Research- <i>Swift</i>Research
         </p>
       </div>
       {allData?.map((data, index) => (
@@ -85,8 +85,10 @@ const BackOfficeDisplay = ({ fundData }) => {
           <div className="swift-folios-research-back-office-sub-container">
             <div className="swift-folios-research-back-office-row1">
               <BackOfficeHorizontalDisplay stockCode={data.stock_code} />
+              <div className="swift-folios-back-office-buttons-container">
               <button onClick={() => handleUpdateClick(data)}  className="swift-folios-research-back-office-button">Update</button>
               <button onClick={() => handleEditStockClick(data.id) } className="swift-folios-research-back-office-button">Edit Stock</button>
+              </div>
             </div>
             <BackOfficeMainDisplay key={data.id} postDetails={data.post_details} />
             <div className="swift-folios-research-back-office-row3-container">
@@ -104,7 +106,7 @@ const BackOfficeDisplay = ({ fundData }) => {
       )}
       {isEditStockModalOpen && (
         <SwiftFoliosModal  className="swift-folios-back-office-edit-stock-modal">
-          <div className="modal"><BackOfficeStockEditForm postId={selectedPost} onClose={handleCloseModal} /></div>
+          <div className="modal stock-edit-modal"><BackOfficeStockEditForm postId={selectedPost} onClose={handleCloseModal} /></div>
         </SwiftFoliosModal>
       )}
     </div>

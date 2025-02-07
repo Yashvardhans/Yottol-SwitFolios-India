@@ -8,8 +8,14 @@
   border: none;
   cursor: pointer;
 }
-
-
+.stock-edit-submit-button{
+  margin-top: 10px;
+}
+.back-office-stock-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; 
+}
 .stock-container .stock__search__icons__wrapper {
     height: 40px;
     display: flex;

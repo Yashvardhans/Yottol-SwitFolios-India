@@ -31,18 +31,6 @@ const OriginalResearch2 = ({ fundData }) => {
     fetchData();
   }, []);
 
-  const handleToggleExpand = (itemId) => {
-    setExpandedItems((prevExpanded) => {
-      const updated = new Set(prevExpanded);
-      if (updated.has(itemId)) {
-        updated.delete(itemId);
-      } else {
-        updated.add(itemId);
-      }
-      return updated;
-    });
-  };
-
   return loading ? (
     <div className="swift-folios-research-loader">
       <p>Loading</p>
@@ -56,7 +44,7 @@ const OriginalResearch2 = ({ fundData }) => {
     <div className="swift-folios-research-main">
       <div className="swift-folios-research-main-header-container">
         <p className="swift-folios-research-main-header">
-          Original Research- SwiftResearch
+          Original Research- <i>Swift</i>Research
         </p>
         <CustomSearch />
       </div>

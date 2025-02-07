@@ -46,6 +46,11 @@ const CustomInputError = ({
 
   return (
     <div className={classnameDiv} style={styleDiv}>
+      <CustomLabel
+        classname={classnameLabel}
+        labelText={labelText}
+        style={{ styleLabel }}
+      />
       <CustomInputBox
         type={type}
         value={value1}
@@ -58,12 +63,12 @@ const CustomInputError = ({
         style={styleInput}
         onKeyUp={onKeyUp}
       />
-      {/* {errorDisplay && (
+      {errorDisplay && (
         <CustomError
           errorText={!error ? "error" : error}
           classname={classnameError}
         />
-      )} */}
+      )}
     </div>
   );
 };
