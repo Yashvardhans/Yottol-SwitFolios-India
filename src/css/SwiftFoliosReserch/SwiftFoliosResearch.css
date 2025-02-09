@@ -105,7 +105,9 @@ body {
 }
 .swift-folios-research-row2-header {
   font-weight: 700;
+  color: #011627;
 }
+
 .swift-folios-research-row2-date {
   color: #011627b2;
   font-style: italic;
@@ -117,6 +119,12 @@ body {
 }
 .back-office-read-more-content > img {
   cursor: pointer;
+}
+.swift-folios-research-row2-text{
+  color: #011627;
+}
+.visit{
+  color: #011627B2;
 }
 .down-arrow-icon {
   transition: transform 0.3s;

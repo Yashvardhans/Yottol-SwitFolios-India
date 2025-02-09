@@ -130,11 +130,15 @@ const OriginalResearch2Main = ({ postDetails }) => {
                     day: "numeric",
                   })}
                 </div>
-                <div className="swift-folios-research-row2-header">
+                <div className={`swift-folios-research-row2-header ${
+      visitedItems.has(detail.id) ? "visited" : ""
+    }`}>
                   {detail.heading}
                 </div>
                 <div
-                  className="swift-folios-research-row2-text"
+                  className={`swift-folios-research-row2-text ${
+                    visitedItems.has(detail.id) ? "" : "visit"
+                  }`}
                   dangerouslySetInnerHTML={{
                     __html: expandedItems.has(detail.id)
                       ? detail.description
