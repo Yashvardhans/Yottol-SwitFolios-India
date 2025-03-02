@@ -9,6 +9,10 @@
   letter-spacing: -0.7px;
   box-sizing: border-box;
 }
+form .type-select{
+  width: 15%;
+  font-weight: 700;
+}
 
 .swift-folios-research-form-container>form {
   display: flex;
@@ -19,7 +23,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 70vh; 
+  max-height: 80vh; 
   overflow-y: auto;
   
 }
@@ -30,13 +34,27 @@
   border-radius: 6px;
 }
 .swift-folios-research-form-text {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 12px;
   color: #011627;
   cursor: pointer;
 }
 .swift-folios-research-form-text-input{
   font-size: 12px;
+}
+.stock-label {
+  font-size: 12px;
+  font-weight: 700;
+  /* margin: 3px 0; */
+}
+.swift-folios-research-form-stock-container{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.swift-folios-research-file-group{
+  padding: 10px 0;
+  align-items: center;
 }
 .swift-folios-research-form-submit-button {
   border-radius: 35px;
@@ -55,19 +73,29 @@
 
 .swift-folios-research-form-group label {
   display: block;
-  padding: 10px 0;
+  /* padding: 10px 0; */
 }
 
 .swift-folios-research-form-text {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 12px;
   color: #011627;
   cursor: pointer;
 }
-
-.swift-folios-research-form-image-edit-button {
-  padding: 10px 25px;
+.react-quill-group{
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
+.swift-folios-research-form-thumbnail-content{
+  display: flex;
+  
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+}
+
 
 .swift-folios-research-form-image-editor-modal {
   width: 60vw;
@@ -75,7 +103,10 @@
   background-color: whitesmoke;
 }
 
-
+.swift-folios-research-video-label{
+  font-weight:700;
+  padding: 5px 0;
+}
 .swift-folios-research-form-container .stock__search__icons__wrapper {
   height: 40px;
   display: flex;
@@ -162,7 +193,7 @@
 
 .swift-folios-research-form-container .stock__search .stock__suggestions .search__loader p {
   font-size: 12px !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
   margin-top: 5px !important;
   padding: 0 !important;
   display: flex;
@@ -173,7 +204,7 @@
   padding: 10px 10px 10px 20px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   display: flex;
   align-items: center;
   border-bottom: 1px solid #f5f5f5;
@@ -200,7 +231,7 @@
 .swift-folios-research-form-container .stock__search .stock__suggestions p>span:nth-child(1) {
   flex: 4;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--font-primary);
   max-width: 140px;
   white-space: nowrap;
@@ -307,4 +338,12 @@
   font-size: 12px;
   border: none;
   color: #011627;
+}
+.swift-folios-research-form-image-edit-button{
+  font-weight: 700;
+  font-size: 12px;
+  color: #011627;
+  cursor: pointer;
+  background: none;
+  border: none;
 }

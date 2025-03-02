@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 
-import BackOfficeHorizontalDisplay from "./BackOfficeHorizontalDisplay";
-import BackOfficeMainDisplay from "./BackOfficeMainDisplay";
-import BackOfficeVerticalDisplay from "./BackOfficeVerticalDisplay";
-import BackOfficeUpdateForm from "./BackOfficeUpdateForm";
-import BackOfficeStockEditForm from "./BackOfficeStockEditForm";
+import ResearchBackOfficeHorizontalDisplay from "./ResearchBackOfficeHorizontalDisplay";
+import ResearchBackOfficeMainDisplay from "./ResearchBackOfficeMainDisplay";
+import ResearchBackOfficeVerticalDisplay from "./ResearchBackOfficeVerticalDisplay";
+import ResearchBackOfficeUpdateForm from "./ResearchBackOfficeUpdateForm";
+import ResearchBackOfficeStockEditForm from "./ResearchBackOfficeStockEditForm";
 
 import SwiftFoliosModal from "../CustomComponents/SwiftFoliosModal/SwiftFoliosModal";
 import Pulse from "../CustomComponents/Loader/Pulse";
 import ServerRequest from "../../utils/ServerRequest";
-import "../../css/BackOffice/BackOffice.css"
+import "../../css/ResearchBackOffice/ResearchBackOffice.css"
 // import "../../css/SwiftFoliosReserch/SwiftFoliosResearch.css";
 
-const BackOfficeDisplay = ({ fundData }) => {
+const ResearchBackOfficeDisplay = ({ fundData }) => {
   const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedItems, setExpandedItems] = useState(new Set());
@@ -27,8 +27,10 @@ const BackOfficeDisplay = ({ fundData }) => {
           method: "get",
           URL: "/back-office/post/get",
         });
-        setAllData(data.data);
-        setLoading(false);
+        setTimeout(() => {
+          setAllData(data.data);
+          setLoading(false);
+        }, 1500);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -37,7 +39,13 @@ const BackOfficeDisplay = ({ fundData }) => {
     fetchData();
   }, [allData]);
 
-  
+  useEffect(() => {
+      if (isUpdateModalOpen || isEditStockModalOpen) {
+        document.body.classList.add("modal-open");
+      } else {
+        document.body.classList.remove("modal-open");
+      }
+    }, [isUpdateModalOpen,isEditStockModalOpen]);
 
   const handleUpdateClick = (post) => {
     setSelectedPost(post);
@@ -58,7 +66,7 @@ const BackOfficeDisplay = ({ fundData }) => {
   };
 
   return loading ? (
-    <div className="swift-folios-research-back-office-loader">
+    <div className="swift-folios-research-back-office-main-loader">
       <p>Loading</p>
       <Pulse />
     </div>
@@ -84,33 +92,33 @@ const BackOfficeDisplay = ({ fundData }) => {
         >
           <div className="swift-folios-research-back-office-sub-container">
             <div className="swift-folios-research-back-office-row1">
-              <BackOfficeHorizontalDisplay stockCode={data.stock_code} />
+              <ResearchBackOfficeHorizontalDisplay stockCode={data.stock_code} />
               <div className="swift-folios-back-office-buttons-container">
               <button onClick={() => handleUpdateClick(data)}  className="swift-folios-research-back-office-button">Update</button>
               <button onClick={() => handleEditStockClick(data.id) } className="swift-folios-research-back-office-button">Edit Stock</button>
               </div>
             </div>
-            <BackOfficeMainDisplay key={data.id} postDetails={data.post_details} />
+            <ResearchBackOfficeMainDisplay key={data.id} postDetails={data.post_details} />
             <div className="swift-folios-research-back-office-row3-container">
               {data?.related_stock?.map((stock, idx) => (
-                <BackOfficeVerticalDisplay key={idx} stockCode={stock} />
+                <ResearchBackOfficeVerticalDisplay key={idx} stockCode={stock} />
               ))}
             </div>
           </div>
         </div>
       ))}
       {isUpdateModalOpen && (
-        <SwiftFoliosModal  className="swift-folios-back-office-update-post-modal">
-          <div className="modal"><BackOfficeUpdateForm postData={selectedPost} onClose={handleCloseModal} /></div>
+        <SwiftFoliosModal closeModal={handleCloseModal} className="swift-folios-back-office-update-post-modal">
+          <div className="modal"><ResearchBackOfficeUpdateForm postData={selectedPost} onClose={handleCloseModal} /></div>
         </SwiftFoliosModal>
       )}
       {isEditStockModalOpen && (
-        <SwiftFoliosModal  className="swift-folios-back-office-edit-stock-modal">
-          <div className="modal stock-edit-modal"><BackOfficeStockEditForm postId={selectedPost} onClose={handleCloseModal} /></div>
+        <SwiftFoliosModal closeModal={handleCloseModal}  className="swift-folios-back-office-edit-stock-modal">
+          <div className="modal stock-edit-modal"><ResearchBackOfficeStockEditForm postId={selectedPost} onClose={handleCloseModal} /></div>
         </SwiftFoliosModal>
       )}
     </div>
   );
 };
 
-export default BackOfficeDisplay;
+export default ResearchBackOfficeDisplay;

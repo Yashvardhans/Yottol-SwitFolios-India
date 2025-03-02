@@ -4,9 +4,9 @@ import CustomButton from "../CustomComponents/CustomButton/CustomButton";
 import Pulse from "../CustomComponents/Loader/Pulse";
 import { Alert } from "../CustomComponents/CustomAlert/CustomAlert";
 import ServerRequest from "../../utils/ServerRequest";
-import "./BackOfficeStockEditForm.css";
+import "./ResearchBackOfficeStockEditForm.css";
 
-const BackOfficeStockEditForm = ({ postId, onClose }) => {
+const ResearchBackOfficeStockEditForm = ({ postId, onClose }) => {
   const [singleStockSelections, setSingleStockSelections] = useState([]);
   const [relatedStockSelections, setRelatedStockSelections] = useState([]);
   const [errors, setErrors] = useState({});
@@ -189,4 +189,4 @@ const BackOfficeStockEditForm = ({ postId, onClose }) => {
   );
 };
 
-export default BackOfficeStockEditForm;
+export default ResearchBackOfficeStockEditForm;

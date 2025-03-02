@@ -1,7 +1,7 @@
 import React from "react";
 import useMarketStock from "../../hooks/useMarketStock";
 
-const BackOfficeVerticalDisplay = ({stockCode}) => {
+const ResearchBackOfficeVerticalDisplay = ({stockCode}) => {
     const stockData = useMarketStock(stockCode)
     console.log("std",stockCode);
     
@@ -24,4 +24,4 @@ const BackOfficeVerticalDisplay = ({stockCode}) => {
   );
 };
 
-export default BackOfficeVerticalDisplay;
+export default ResearchBackOfficeVerticalDisplay;

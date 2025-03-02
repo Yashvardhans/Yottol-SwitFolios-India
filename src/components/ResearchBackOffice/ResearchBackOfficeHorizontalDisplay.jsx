@@ -1,7 +1,7 @@
 import React from 'react';
 import useMarketStock from '../../hooks/useMarketStock';
 
-const BackOfficeHorizontalDisplay = ({stockCode}) => {
+const ResearchBackOfficeHorizontalDisplay = ({stockCode}) => {
     console.log("sc",stockCode);
     
     const stockData = useMarketStock("HDFCAMC")
@@ -13,7 +13,7 @@ const BackOfficeHorizontalDisplay = ({stockCode}) => {
             <div className="swift-folios-research-row1">
               <div className="swift-folios-research-fund-name">{stockCode}</div>
               <div className="swift-folios-research-fund-price">
-                {stockData?.last_traded_price}
+                Rs. {stockData?.last_traded_price}
               </div>
               <div className="swift-folios-research-value-change">
                 {stockData?.change_price}
@@ -27,4 +27,4 @@ const BackOfficeHorizontalDisplay = ({stockCode}) => {
     );
 };
 
-export default BackOfficeHorizontalDisplay;
+export default ResearchBackOfficeHorizontalDisplay;

@@ -2,85 +2,65 @@ import React, { useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import downloadIcon from "../../assets/icons/download_icon.svg";
 import ServerRequest from "../../utils/ServerRequest";
+import SwiftFoliosModal from "../CustomComponents/SwiftFoliosModal/SwiftFoliosModal";
 import playButton from "../../assets/play-button.png";
 import downArrow from "../../assets/icons/down_arrow.svg";
+import "../../css/ResearchBackOffice/ResearchBackOffice.css";
+import ResearchBackOfficeMainDisplayEditForm from "./ResearchBackOfficeMainDisplayEditForm";
 
-import "../../css/SwiftFoliosReserch/SwiftFoliosResearch.css";
-
-const accountCode = "BRC4897812";
-
-const OriginalResearch2Main = ({ postDetails }) => {
-  const [visitedItems, setVisitedItems] = useState(new Set());
+const ResearchBackOfficeMainDisplay = ({ postDetails }) => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
   const [expandedItems, setExpandedItems] = useState(new Set());
 
+  const sortedDetails = [...postDetails].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+  useEffect(() => {
+    if (isEditModalOpen) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+  }, [isEditModalOpen]);
+  let reorderedDetails = [];
+  if (sortedDetails.length === 1) {
+    reorderedDetails = sortedDetails;
+  } else if (sortedDetails.length > 1) {
+    const oldest = sortedDetails[0];
+    const newest = sortedDetails[sortedDetails.length - 1];
+    const remaining = sortedDetails.slice(1, -1).reverse();
+    reorderedDetails = [newest, oldest, ...remaining];
+  }
+
+  console.log("red", reorderedDetails);
+
   const handleToggleExpand = (itemId) => {
-    setExpandedItems((prevExpanded) => {
-      const updated = new Set(prevExpanded);
-      if (updated.has(itemId)) {
-        updated.delete(itemId);
-      } else {
-        updated.add(itemId);
-      }
-      return updated;
-    });
+    setExpandedItems(
+      (prev) =>
+        new Set(
+          prev.has(itemId)
+            ? [...prev].filter((id) => id !== itemId)
+            : [...prev, itemId]
+        )
+    );
   };
 
-  useEffect(() => {
-    const fetchVisitedData = async () => {
-      try {
-        const visitedData = await ServerRequest({
-          method: "get",
-          URL: "/swift-folios-research/visit-status/get",
-        });
-
-        const visitedIds = visitedData?.data
-          .filter(
-            (item) =>
-              item.account_id === accountCode && item.visit_status === "1"
-          )
-          .map((item) => item.id);
-
-        setVisitedItems(new Set(visitedIds));
-      } catch (error) {
-        console.error("Error fetching visit status:", error);
-      }
-    };
-
-    fetchVisitedData();
-  }, []);
-
-  const handleVisitStatus = async (itemId) => {
-    const data = {
-      account_code: accountCode,
-      item_id: itemId,
-      visit_status: true,
-    };
-
-    try {
-      await ServerRequest({
-        method: "post",
-        URL: "/swift-folios-research/visit-status/post",
-        data: data,
-      });
-      setVisitedItems((prevVisited) => {
-        const updated = new Set(prevVisited);
-        updated.add(itemId);
-        return updated;
-      });
-      console.log("Visit status updated successfully");
-    } catch (error) {
-      console.error("Error updating visit status:", error);
-    }
+  const handleEditClick = (post) => {
+    setSelectedPost(post);
+    setIsEditModalOpen(true);
+  };
+  const handleModalClose = (e) => {
+    e?.stopPropagation();
+    e?.preventDefault();
+    setIsEditModalOpen(false);
   };
 
   const handleFileDownload = async (fileUrl) => {
     try {
       const response = await fetch(fileUrl);
-      if (!response.ok) throw new Error("File not found or inaccessible");
-
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-
       const link = document.createElement("a");
       link.href = url;
       link.download = fileUrl.split("/").pop();
@@ -88,58 +68,46 @@ const OriginalResearch2Main = ({ postDetails }) => {
       link.click();
       link.remove();
     } catch (error) {
-      console.error("Error downloading file:", error);
+      console.error("Download error:", error);
     }
   };
 
-  const sortedDetails = [...postDetails].sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
-  );
-  let reorderedDetails = [];
-if (sortedDetails.length === 1) {
-  reorderedDetails = sortedDetails; 
-} else if (sortedDetails.length > 1) {
-  const oldest = sortedDetails[0];
-  const newest = sortedDetails[sortedDetails.length - 1];
-  const remaining = sortedDetails.slice(1, -1).reverse();
-  reorderedDetails = [newest, oldest, ...remaining];
-}
-
   return (
     <div>
-      {reorderedDetails.length > 0 && (
-        <div className="swift-folios-research-updated-post-container">
-          {reorderedDetails.map((detail) => (
+      <div className="swift-folios-back-office-posts-container">
+        {reorderedDetails.map((detail) => (
+          <div className="swift-folios-research-back-office-post-content">
+            <div className="swift-folios-research-back-office-row2-date">
+              <span>
+                Posted On{" "}
+                {new Date(detail.date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditClick(detail);
+                }}
+                className="swift-folios-research-back-office-button"
+              >
+                Edit
+              </button>
+            </div>
             <div
               key={detail.id}
-              className={`swift-folios-research-row2 ${
+              className={`swift-folios-back-office-research-row2 ${
                 detail.video_url ? "with-video" : ""
               }`}
-              onClick={() => handleVisitStatus(detail.id)}
-              style={{
-                backgroundColor: visitedItems.has(detail.id)
-                  ? "transparent"
-                  : "#FAFAFA",
-              }}
             >
-              <div className="swift-folios-research-updated-post-sub-container">
-                <div className="swift-folios-research-row2-date">
-                  Posted On{" "}
-                  {new Date(detail.date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </div>
-                <div className={`swift-folios-research-row2-header ${
-      visitedItems.has(detail.id) ? "visited" : "visit"
-    }`}>
+              <div className="swift-folios-back-office-row2-sub-container">
+                <div className="swift-folios-research-back-office-row2-header">
                   {detail.heading}
                 </div>
                 <div
-                  className={`swift-folios-research-row2-text ${
-                    visitedItems.has(detail.id) ? "" : "visit"
-                  }`}
+                  className="swift-folios-research-back-office-row2-text"
                   dangerouslySetInnerHTML={{
                     __html: expandedItems.has(detail.id)
                       ? detail.description
@@ -162,6 +130,7 @@ if (sortedDetails.length === 1) {
                     </button>
                   </div>
                 )}
+
                 {detail.description.length > 150 && (
                   <div className="back-office-read-more-content">
                     <button
@@ -182,17 +151,10 @@ if (sortedDetails.length === 1) {
                   </div>
                 )}
               </div>
+
               {detail.video_url && (
-                <div
-                  key={detail.id}
-                  style={{
-                    position: "relative",
-                    width: "365px",
-                    height: "204px",
-                  }}
-                >
+                <div className="swift-folios-research-back-office-video-preview-container">
                   <ReactPlayer
-                    key={detail.id}
                     url={detail.video_url}
                     light={
                       <div
@@ -226,11 +188,25 @@ if (sortedDetails.length === 1) {
                 </div>
               )}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+      </div>
+
+      {isEditModalOpen && (
+        <SwiftFoliosModal
+          closeModal={handleModalClose}
+          className="swift-folios-back-office-edit-post-modal"
+        >
+          <div className="modal">
+            <ResearchBackOfficeMainDisplayEditForm
+              postData={selectedPost}
+              onClose={() => setIsEditModalOpen(false)}
+            />
+          </div>
+        </SwiftFoliosModal>
       )}
     </div>
   );
 };
 
-export default OriginalResearch2Main;
+export default ResearchBackOfficeMainDisplay;

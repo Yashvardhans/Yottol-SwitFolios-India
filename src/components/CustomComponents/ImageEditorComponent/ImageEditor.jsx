@@ -10,12 +10,13 @@ const ImageEditor = ({ onSave }) => {
   const [rotation, setRotation] = useState(0);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null); // Cropped area in pixels
   const [croppedImage, setCroppedImage] = useState(null);
-  const [upFile,setUpFile] = useState(null)
+  const [upFile, setUpFile] = useState(null);
   const handleImageUpload = (e) => {
+    e?.stopPropagation()
     const file = e.target.files[0];
-    setUpFile(file)
-    console.log("file",file);
-    
+    setUpFile(file);
+    console.log("file", file);
+
     if (file) {
       const reader = new FileReader();
       reader.onload = () => setImageSrc(reader.result);
@@ -42,22 +43,32 @@ const ImageEditor = ({ onSave }) => {
   const saveCroppedImage = useCallback(async () => {
     if (!croppedAreaPixels || !imageSrc) return;
     try {
-      
-      const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
-      
-      
-      const file1 = new File([croppedBlob], upFile.name, { type: croppedBlob.type });
-      
+      const croppedBlob = await getCroppedImg(
+        imageSrc,
+        croppedAreaPixels,
+        rotation
+      );
+
+      const file1 = new File([croppedBlob], upFile.name, {
+        type: croppedBlob.type,
+      });
+
       onSave(file1);
       console.log("Cropped image file:", file1);
     } catch (error) {
       console.error("Error cropping the image:", error);
     }
   }, [croppedAreaPixels, imageSrc, rotation, onSave, upFile]);
-  
 
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "20px" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        padding: "20px",
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
       {/* Image Canvas */}
       <div
         style={{
@@ -67,6 +78,7 @@ const ImageEditor = ({ onSave }) => {
           width: "50%",
           height: "300px",
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         {imageSrc && (
           <Cropper
@@ -93,9 +105,16 @@ const ImageEditor = ({ onSave }) => {
           width: "40%",
           paddingLeft: "20px",
         }}
+        onClick={(e) => e.stopPropagation()}
       >
-        <input type="file" accept="image/*" onChange={handleImageUpload} style={{ marginBottom: "20px" }} onClick={(e) => e.stopPropagation()}/>
-        <div style={{ marginBottom: "20px" }}>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          style={{ marginBottom: "20px" }}
+          onClick={(e) => e.stopPropagation()}
+        />
+        <div style={{ marginBottom: "20px" }} onClick={(e) => e.stopPropagation()}>
           <label>
             Zoom:
             <input
@@ -109,7 +128,7 @@ const ImageEditor = ({ onSave }) => {
             />
           </label>
         </div>
-        <div style={{ marginBottom: "20px" }}>
+        <div style={{ marginBottom: "20px" }} onClick={(e) => e.stopPropagation()}>
           <label>
             Straighten:
             <input

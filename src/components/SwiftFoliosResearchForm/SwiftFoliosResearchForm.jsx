@@ -9,6 +9,7 @@ import CustomDropdown from "../CustomComponents/CustomDropdown/CustomDropdown";
 import CustomButton from "../CustomComponents/CustomButton/CustomButton";
 import CustomBodyComponent from "../CustomComponents/CustomBodyComponent/CustomBodyComponent";
 import CustomSearchableDropdown from "../CustomComponents/CustomSearchableDropdown/CustomSearchableDropdown";
+import CustomSelect from "../CustomComponents/CustomSelect/CustomSelect";
 import CustomInputError from "../CustomComponents/CustomInput/CustomInputError";
 import { Alert } from "../CustomComponents/CustomAlert/CustomAlert";
 
@@ -48,16 +49,35 @@ const SwiftFoliosResearchForm = () => {
       },
     });
   };
+  const showSuccess = (msg) => {
+    return Alert({
+      TitleText: "Success",
+      Message: msg,
+      BandColor: "#e51a4b",
+      AutoClose: {
+        Active: true,
+        Line: true,
+        LineColor: "#e51a4b",
+        Time: 3,
+      },
+    });
+  };
 
   const uniqueId = `${Date.now()}`;
   function generateUniqueId() {
     const timestamp = `${Date.now()}`;
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let randomPart = "";
     for (let i = 0; i < 5; i++) {
-      randomPart += characters.charAt(Math.floor(Math.random() * characters.length));
+      randomPart += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
     }
-    const combined = (timestamp + randomPart).split("").sort(() => Math.random() - 0.5).join("");
+    const combined = (timestamp + randomPart)
+      .split("")
+      .sort(() => Math.random() - 0.5)
+      .join("");
     return combined;
   }
 
@@ -66,7 +86,9 @@ const SwiftFoliosResearchForm = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (videoURL) {
-      showError("You can only upload a video file or enter a video URL, not both.");
+      showError(
+        "You can only upload a video file or enter a video URL, not both."
+      );
       return;
     }
     if (file.size > 10 * 1024 * 1024) {
@@ -102,13 +124,19 @@ const SwiftFoliosResearchForm = () => {
   const handleURLChange = (e) => {
     const url = e.target.value;
     if (videoFile) {
-      showError("You can only upload a video file or enter a video URL, not both.");
+      showError(
+        "You can only upload a video file or enter a video URL, not both."
+      );
       return;
     }
     setVideoURL(url);
   };
 
   const handleRelatedStockSelection = (selectedStock) => {
+    if (singleStockSelections.includes(selectedStock)) {
+      showError("This stock is already selected in single stock.");
+      return;
+    }
     if (relatedStockSelections.length >= 3) {
       showError("You can select a maximum of 3 stocks.");
       return;
@@ -119,17 +147,21 @@ const SwiftFoliosResearchForm = () => {
   };
 
   const handleSingleStockSelection = (selectedStock) => {
-    if (relatedStockSelections.length >= 1) {
+    if (relatedStockSelections.includes(selectedStock)) {
+      showError("This stock is already selected in related stocks.");
+      return;
+    }
+    if (singleStockSelections.length >= 1) {
       showError("You can select only one stock.");
       return;
     }
-    if (!singleStockSelections.includes(selectedStock)) {
-      setSingleStockSelections([selectedStock]);
-    }
+    setSingleStockSelections([selectedStock]);
   };
 
   const handleRemoveStock = (stock) => {
-    setRelatedStockSelections(relatedStockSelections.filter((s) => s !== stock));
+    setRelatedStockSelections(
+      relatedStockSelections.filter((s) => s !== stock)
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -166,6 +198,10 @@ const SwiftFoliosResearchForm = () => {
       showError("Please select a single stock.");
       return;
     }
+    if (type === "video" && !thumbnailFile) {
+      showError("Please attach a Thumbnail");
+      return;
+    }
     if (relatedStockSelections.length === 0) {
       showError("Please select at least one related stock.");
       return;
@@ -200,7 +236,7 @@ const SwiftFoliosResearchForm = () => {
         },
       });
       if (request?.message === "Data added successfully") {
-        showError("Form submitted successfully");
+        showSuccess("Form submitted successfully");
         navigate("/research2");
       }
     } catch (error) {
@@ -220,12 +256,14 @@ const SwiftFoliosResearchForm = () => {
         </div>
       ) : (
         <form>
-          <div className="swift-folios-research-form-group">
-            <CustomDropdown
-              label={"Type"}
+          <div className="swift-folios-research-form-group type-select">
+            <CustomSelect
+              heading="Type"
               options={["post", "video"]}
-              selected={type}
-              onChange={(value) => setType(value)}
+              defaultIndex={0}
+              onTypeChange={(value) => setType(value)}
+              placeholder="Select Type"
+              error={errors.type}
             />
           </div>
           <div className="form-scrollable-content">
@@ -268,7 +306,7 @@ const SwiftFoliosResearchForm = () => {
                     name="heading"
                     value={heading}
                     classnameLabel="swift-folios-research-form-text"
-                  classnameInput="swift-folios-research-form-text-input"
+                    classnameInput="swift-folios-research-form-text-input"
                     onInputChange={(name, value) => setHeading(value)}
                     error={errors.heading}
                   />
@@ -312,7 +350,10 @@ const SwiftFoliosResearchForm = () => {
                 </div>
                 <div className="swift-folios-research-form-group">
                   <div className="swift-folios-research-file-group">
-                    <label htmlFor="attachments" className="swift-folios-research-form-text">
+                    <label
+                      htmlFor="attachments"
+                      className="swift-folios-research-form-text"
+                    >
                       Upload Pdf
                     </label>
                     <input
@@ -339,7 +380,10 @@ const SwiftFoliosResearchForm = () => {
                   <>
                     <div className="swift-folios-research-form-group">
                       <div className="swift-folios-research-file-group">
-                        <label htmlFor="videoFile" className="swift-folios-research-form-text">
+                        <label
+                          htmlFor="videoFile"
+                          className="swift-folios-research-form-text"
+                        >
                           Upload Video
                         </label>
                         <input
@@ -349,9 +393,12 @@ const SwiftFoliosResearchForm = () => {
                           onChange={handleFileChange}
                           style={{ display: "none", cursor: "pointer" }}
                         />
+
                         {videoFile && (
                           <div className="swift-folios-research-file-display">
-                            <p className="uploaded-file-name">{videoFile.name}</p>
+                            <p className="uploaded-file-name">
+                              {videoFile.name}
+                            </p>
                             <button
                               className="remove-file-button"
                               onClick={() => setVideoFile(null)}
@@ -362,24 +409,39 @@ const SwiftFoliosResearchForm = () => {
                         )}
                       </div>
                     </div>
+                    <div style={{ paddingBottom: "5px" }}>OR</div>
                     <div className="swift-folios-research-form-group">
                       <CustomInputError
                         labelText="Video URL"
                         type="text"
                         name="videoURL"
                         value={videoURL}
+                        classnameLabel="swift-folios-research-video-label"
                         onInputChange={(name, value) => setVideoURL(value)}
                         error={errors.video}
                       />
                     </div>
-                    <div className="swift-folios-research-form-group">
+                    <div className="swift-folios-research-form-group swift-folios-research-form-thumbnail-content">
                       <button
                         type="button"
                         onClick={() => setIsImageEditorOpen(true)}
-                        className="swift-folios-research-back-office-form-image-edit-button"
+                        className="swift-folios-research-form-image-edit-button"
                       >
                         Upload Thumbnail
                       </button>
+                      {thumbnailFile && (
+                        <div className="swift-folios-research-file-display">
+                          <p className="uploaded-file-name">
+                            {thumbnailFile.name}
+                          </p>
+                          <button
+                            className="remove-file-button"
+                            onClick={() => setThumbnailFile(null)}
+                          >
+                            ✖
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </>
                 )}

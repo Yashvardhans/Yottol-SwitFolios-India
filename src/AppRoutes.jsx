@@ -3,8 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import OriginalResearch1 from "./components/OriginalResearch1/OriginalResearch1";
 import OriginalResearch2 from "./components/OriginalResearch2/OriginalResearch2";
 import SwiftFoliosResearchForm from "./components/SwiftFoliosResearchForm/SwiftFoliosResearchForm";
-import BackOfficeUpdateForm from "./components/BackOffice/BackOfficeUpdateForm";
-import BackOfficeDisplay from "./components/BackOffice/BackOfficeDisplay";
+import ResearchBackOfficeUpdateForm from "./components/ResearchBackOffice/ResearchBackOfficeUpdateForm";
+import ResearchBackOfficeDisplay from "./components/ResearchBackOffice/ResearchBackOfficeDisplay";
 
 const AppRoutes = () => {
   return (
@@ -22,12 +22,8 @@ const AppRoutes = () => {
           element={<OriginalResearch2 />}
         />
         <Route
-        path="/back-office/update"
-        element={<BackOfficeUpdateForm/>}
-        />
-        <Route
         path="/back-office/display"
-        element={<BackOfficeDisplay/>}/>
+        element={<ResearchBackOfficeDisplay/>}/>
 
       </Routes>
     </div>

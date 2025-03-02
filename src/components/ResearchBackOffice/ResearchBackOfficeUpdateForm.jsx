@@ -7,29 +7,30 @@ import SwiftFoliosModal from "../CustomComponents/SwiftFoliosModal/SwiftFoliosMo
 import ImageEditor from "../CustomComponents/ImageEditorComponent/ImageEditor";
 import CustomDropdown from "../CustomComponents/CustomDropdown/CustomDropdown";
 import CustomButton from "../CustomComponents/CustomButton/CustomButton";
-import CustomBodyComponent from "../CustomComponents/CustomBodyComponent/CustomBodyComponent";
 import CustomInputError from "../CustomComponents/CustomInput/CustomInputError";
+import CustomBodyComponent from "../CustomComponents/CustomBodyComponent/CustomBodyComponent";
+import CustomSelect from "../CustomComponents/CustomSelect/CustomSelect";
 import { Alert } from "../CustomComponents/CustomAlert/CustomAlert";
 
 import ServerRequest from "../../utils/ServerRequest";
 import Pulse from "../CustomComponents/Loader/Pulse";
 
-import "./BackOfficeUpdateForm.css";
+import "./ResearchBackOfficeUpdateForm.css";
 
-const BackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
+const ResearchBackOfficeUpdateForm = ({ postData, onClose }) => {
   const navigate = useNavigate();
-  const [type, setType] = useState(postData?.video_url ? "video" : "post");
-  const [heading, setHeading] = useState(postData?.heading || "");
-  const [body, setBody] = useState(postData?.description || "");
+  const [type, setType] = useState("");
+  const [heading, setHeading] = useState("");
+  const [body, setBody] = useState("");
   const [attachments, setAttachments] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
-  const [videoURL, setVideoURL] = useState(postData?.video_url);
+  const [videoURL, setVideoURL] = useState("");
   const [isImageEditorOpen, setIsImageEditorOpen] = useState(false);
-  const [thumbnailFile, setThumbnailFile] = useState(null);
+  const [thumbnailFile, setThumbnailFile] = useState();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const postId = postData.id;
+  const uniqueId = postData.id;
 
   const showError = (msg) => {
     return Alert({
@@ -44,22 +45,53 @@ const BackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
       },
     });
   };
+  const showSuccess = (msg) => {
+      return Alert({
+        TitleText: "Success",
+        Message: msg,
+        BandColor: "#28a745",
+        AutoClose: {
+          Active: true,
+          Line: true,
+          LineColor: "#28a745",
+          Time: 3,
+        },
+      });
+    };
+
+  function generateUniqueId() {
+    const timestamp = `${Date.now()}`;
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let randomPart = "";
+    for (let i = 0; i < 5; i++) {
+      randomPart += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
+    }
+    const combined = (timestamp + randomPart)
+      .split("")
+      .sort(() => Math.random() - 0.5)
+      .join("");
+    return combined;
+  }
+
+  const postId = generateUniqueId();
   const isValidUrl = (str) => {
     const pattern = new RegExp(
-      '^([a-zA-Z]+:\\/\\/)?' +
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
-      '((\\d{1,3}\\.){3}\\d{1,3}))' +
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
-      '(\\?[;&a-z\\d%_.~+=-]*)?' +
-      '(\\#[-a-z\\d_]*)?$',
-      'i'
+      "^([a-zA-Z]+:\\/\\/)?" +
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+        "((\\d{1,3}\\.){3}\\d{1,3}))" +
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+        "(\\?[;&a-z\\d%_.~+=-]*)?" +
+        "(\\#[-a-z\\d_]*)?$",
+      "i"
     );
     return pattern.test(str);
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-
     if (videoURL) {
       showError(
         "You can only upload a video file or enter a video URL, not both."
@@ -75,72 +107,58 @@ const BackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
 
   const handleAttachmentChange = (e) => {
     const file = e.target.files[0];
-
     if (!file) return;
-
     if (file.size > 10 * 1024 * 1024) {
       showError("Attachment size exceeds 10MB");
       return;
     }
-
     setAttachments(file);
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!type) newErrors.type = "Type is required.";
-    if (!heading.trim()) newErrors.heading = "Heading is required.";
-    if (!body.trim()) newErrors.body = "Body content is required.";
-    if (type === "video" && !videoFile && !videoURL)
-      newErrors.video = "Video file or URL is required.";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    if (type === "video" && videoFile && videoURL) {
+      showError("Please provide either a video file or a video URL, not both.");
+      return;
+    }
+    if (type === "video" && !videoFile && !videoURL) {
+      showError("Please provide a video file or a video URL.");
+      return;
+    }
+    if (type === "video" && videoURL && !isValidUrl(videoURL)) {
+      showError("Please enter a valid video URL.");
+      return;
+    }
+    if (!type) {
+      showError("Please select a type.");
+      return;
+    }
     if (!heading.trim()) {
       showError("Please enter a heading.");
       return;
     }
-
+    if (!attachments){
+      showError("Please upload a Pdf");
+      return
+    }
     if (!body.trim()) {
       showError("Please enter content for the body.");
       return;
     }
-    if (type === "video") {
-      if (videoFile && videoURL) {
-        showError("Please provide either a video file or a video URL, not both.");
-        return;
-      }
-  
-      if (!videoFile && !videoURL) {
-        showError("Please provide a video file or a video URL.");
-        return;
-      }
-  
-      
-      if (videoURL && !isValidUrl(videoURL)) {
-        showError("Please enter a valid URL format");
-        return;
-      }
-    }
-    if (type === "post" && !attachments) {
-      showError("Please upload a PDF.");
-      return;
-    }
+    
     if (type === "video" && !thumbnailFile) {
-      showError("Please provide a Thumbnail File");
+      showError("Please provide either a Thumbnail File");
       return;
     }
-    const currentDate = new Date().toISOString().split("T")[0];
+
+    const currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
     const formData = new FormData();
+    formData.append("id", uniqueId);
     formData.append("body", body);
     formData.append("date", JSON.stringify(currentDate));
     formData.append("heading", heading);
     formData.append("videoUrl", videoURL);
+    formData.append("postId", postId);
 
     if (attachments) formData.append("file", attachments);
     if (videoFile) formData.append("videoFile", videoFile);
@@ -149,21 +167,22 @@ const BackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
     try {
       setLoading(true);
       const request = await ServerRequest({
-        method: "put",
-        URL: `/back-office/post/${postId}/update`,
+        method: "post",
+        URL: "/back-office/post/add",
         data: formData,
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      if (request?.message === "Data updated successfully") {
-        showError("Form updated successfully");
+      if (request?.message === "Data added successfully") {
+        showSuccess("Form submitted successfully");
         onClose();
+        navigate("/back-office/display");
       }
     } catch (error) {
       showError("Error submitting the form");
-      console.error(error);
+      console.error("upfe", error);
     } finally {
       setLoading(false);
     }
@@ -172,31 +191,36 @@ const BackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
   return (
     <div className="swift-folios-research-back-office-form-container">
       {loading ? (
-        <div className="swift-folios-research-back-office-loader">
+        <div className="swift-folios-research-back-office-update-modal-loader">
           <p>Loading</p>
           <Pulse />
         </div>
       ) : (
         <form>
-          <div className="swift-folios-research-back-office-post-edit-header">
-            <div></div>
-            <button className="form-close-button" onClick={onClose}>
+          <div className="back-office-update-form-header">
+            <div className="swift-folios-research-back-office-form-group header-dropdown">
+              <CustomSelect
+                heading="Type"
+                options={["post", "video"]}
+                defaultIndex={0}
+                onTypeChange={(value) => setType(value)}
+                placeholder="Select Type"
+                error={errors.type}
+              />
+            </div>
+            <button
+              className="form-close-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose(e);
+              }}
+            >
               ✖
             </button>
           </div>
 
-          <div className="swift-folios-research-back-office-form-group">
-            <CustomDropdown
-              label={"Type"}
-              options={["post", "video"]}
-              selected={type}
-              onChange={(value) => setType(value)}
-            />
-          </div>
-
           {(type === "post" || type === "video") && (
             <>
-              {/* Heading Input */}
               <div className="swift-folios-research-back-office-form-group">
                 <CustomInputError
                   labelText="Heading"
@@ -210,15 +234,13 @@ const BackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
                 />
               </div>
 
-              {/* Body Input */}
-
               <CustomBodyComponent
                 label="Body"
                 value={body}
                 onChange={setBody}
                 error={errors.body}
                 containerClassName="swift-folios-research-back-office-form-group react-quill-group"
-                labelClassName="swift-folios-research-back-office-form-text"
+                labelClassName="swift-folios-research-back-office-form-body-text"
                 editorClassName="react-quill"
                 errorClassName="error-text error-body"
               />
@@ -259,6 +281,7 @@ const BackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
                       <label
                         htmlFor="videoFile"
                         className="swift-folios-research-back-office-form-text"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         Upload Video
                       </label>
@@ -282,19 +305,23 @@ const BackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
                       )}
                     </div>
                   </div>
-
+                      <div className="swift-folios-research-back-office-video-option-separator">
+                        OR
+                      </div>
                   <div className="swift-folios-research-back-office-form-group">
                     <CustomInputError
                       labelText="Video URL"
                       type="text"
                       name="videoURL"
                       value={videoURL}
+                      classnameLabel={
+                        "swift-folios-research-back-office-form-text"
+                      }
                       onInputChange={(name, value) => setVideoURL(value)}
                       error={errors.video}
                     />
                   </div>
-
-                  <div className="swift-folios-research-back-office-form-group">
+                  <div className="swift-folios-research-back-office-form-group swift-folios-research-back-office-thumbnail-content">
                     <button
                       type="button"
                       onClick={() => setIsImageEditorOpen(true)}
@@ -302,6 +329,19 @@ const BackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
                     >
                       Upload Thumbnail
                     </button>
+                    {thumbnailFile && (
+                      <div className="swift-folios-research-file-display">
+                        <p className="uploaded-file-name">
+                          {thumbnailFile.name}
+                        </p>
+                        <button
+                          className="remove-file-button"
+                          onClick={() => setThumbnailFile(null)}
+                        >
+                          ✖
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </>
               )}
@@ -311,6 +351,7 @@ const BackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
                   text="Submit"
                   classname="swift-folios-research-back-office-form-submit-button"
                   onClick={handleSubmit}
+                  type="submit"
                 />
               </div>
             </>
@@ -334,4 +375,4 @@ const BackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
   );
 };
 
-export default BackOfficeMainDisplayEditForm;
+export default ResearchBackOfficeUpdateForm;

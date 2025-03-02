@@ -21,8 +21,10 @@ const OriginalResearch2 = ({ fundData }) => {
           method: "get",
           URL: "/swift-folios-research/form-data/get",
         });
-        setAllData(data.data);
-        setLoading(false);
+        setTimeout(() => {
+          setAllData(data.data);
+          setLoading(false);
+        }, 1500);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
