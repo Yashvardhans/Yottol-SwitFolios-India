@@ -199,7 +199,7 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
           {/* Header Section */}
           <div className="swift-folios-research-back-office-post-edit-header">
             <div className="header-content">
-              <div className="header-dropdown">
+              {/* <div className="header-dropdown">
               <CustomSelect
               heading="Type"
               options={["post", "video"]}
@@ -208,7 +208,7 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
               placeholder="Select Type"
               error={errors.type}
             />
-              </div>
+              </div> */}
               <button
                 className="form-close-button edit-form-close-button"
                 onClick={onClose}

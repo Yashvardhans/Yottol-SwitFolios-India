@@ -9,7 +9,7 @@
   box-sizing: border-box;
   padding: 0 10px;
 }
-.swift-folios-research-back-office-main-display-edit-loader{
+.swift-folios-research-back-office-main-display-edit-loader {
   display: flex;
   height: 100%;
   align-items: center;
@@ -30,11 +30,10 @@
   font-weight: 600;
   width: auto;
 }
-.swift-folios-research-back-office-form-text-input{
+.swift-folios-research-back-office-form-text-input {
   margin: 0;
-
 }
-.swift-folios-research-back-office-form-body-text{
+.swift-folios-research-back-office-form-body-text {
   padding: 0 !important;
   font-weight: 700;
   font-size: 12px;
@@ -63,13 +62,13 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 16px;
   color: #011627;
-  margin-right: 10px;
-  margin-top: -5px;
+  margin-right: 8px;
+  margin-top: -8px;
 }
 .edit-form-close-button {
-  margin-top: -35px;
+  margin-top: -10px;
 }
 
 .swift-folios-research-back-office-form-submit-button {
@@ -111,7 +110,7 @@
 
 .header-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 
   width: 100%;
 }
@@ -123,9 +122,8 @@
   cursor: pointer;
   background: none;
   border: none;
-  
 }
-.swift-folios-research-back-office-thumbnail-content{
+.swift-folios-research-back-office-thumbnail-content {
   display: flex;
   gap: 5px;
   padding: 20px 0;
@@ -174,6 +172,6 @@
   border: none;
   color: #011627;
 }
-.swift-folios-research-back-office-video-url{
+.swift-folios-research-back-office-video-url {
   font-weight: 700;
 }
