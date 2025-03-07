@@ -1,5 +1,5 @@
 .custom__alert__box {
-  position: absolute;
+  position: fixed;
   top: -20%;
   left: 50%;
   transform: translateX(-50%);
@@ -15,7 +15,7 @@
 }
 
 .custom__alert__box.active {
-  /* display: flex; */
+  
   top: 3%;
 }
 

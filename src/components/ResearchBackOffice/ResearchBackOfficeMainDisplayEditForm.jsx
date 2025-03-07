@@ -18,13 +18,28 @@ import Pulse from "../CustomComponents/Loader/Pulse";
 import "./ResearchBackOfficeUpdateForm.css";
 
 const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
+  console.log("postDataEdit", postData);
+
   const navigate = useNavigate();
-  const [type, setType] = useState(postData?.video_url ? "video" : "post");
+  const [pdfFileUrl = "", pdfFileName = ""] =
+    postData?.file_url?.split("_") || [];
+  const [thumbnailFileUrl = "", thumbnailFileName = ""] =
+    postData?.thumbnail_url?.split("_") || [];
+  const [videoFileUrl = "", videoFileName = ""] =
+    postData?.video_url?.split("_") || [];
+  console.log("urlssss", pdfFileName, pdfFileUrl);
+
   const [heading, setHeading] = useState(postData?.heading || "");
   const [body, setBody] = useState(postData?.description || "");
-  const [attachments, setAttachments] = useState(null);
+  const [attachments, setAttachments] = useState(pdfFileUrl || null);
   const [videoFile, setVideoFile] = useState(null);
-  const [videoURL, setVideoURL] = useState(postData?.video_url);
+  const videoUrlValue =
+    postData?.video_url && postData.video_url !== "null"
+      ? postData.video_url
+      : null;
+
+  const [type, setType] = useState(videoUrlValue ? "video" : "post");
+  const [videoURL, setVideoURL] = useState(videoUrlValue);
   const [isImageEditorOpen, setIsImageEditorOpen] = useState(false);
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -108,22 +123,29 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
     }
   }, [type]);
 
-  const validateForm = () => {
-    const newErrors = {};
+  // const validateForm = () => {
+  //   const newErrors = {};
 
-    if (!type) newErrors.type = "Type is required.";
-    if (!heading.trim()) newErrors.heading = "Heading is required.";
-    if (!body.trim()) newErrors.body = "Body content is required.";
-    if (type === "video" && !videoFile && !videoURL)
-      newErrors.video = "Video file or URL is required.";
+  //   if (!type) newErrors.type = "Type is required.";
+  //   if (!heading.trim()) newErrors.heading = "Heading is required.";
+  //   if (!body.trim()) newErrors.body = "Body content is required.";
+  //   if (type === "video" && !videoFile && !videoURL)
+  //     newErrors.video = "Video file or URL is required.";
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // };
+  const isBodyEmpty = (html) => {
+    if (!html) return true;
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    const text = div.textContent || div.innerText || "";
+    return text.trim() === "";
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    // if (!validateForm()) return;
     if (type === "video" && videoFile && videoURL) {
       showError("Please provide either a video file or a video URL, not both.");
       return;
@@ -144,7 +166,7 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
       showError("Please enter a heading.");
       return;
     }
-    if (!body.trim()) {
+    if (isBodyEmpty(body)) {
       showError("Please enter content for the body.");
       return;
     }
@@ -264,7 +286,7 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
                   />
                   {attachments && (
                     <div className="swift-folios-research-back-office-file-display">
-                      <p className="uploaded-file-name">{attachments.name}</p>
+                      <p className="uploaded-file-name">{pdfFileName}</p>
                       <button
                         className="remove-file-button"
                         onClick={() => setAttachments(null)}
@@ -296,7 +318,7 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
                       />
                       {videoFile && (
                         <div className="swift-folios-research-back-office-file-display">
-                          <p className="uploaded-file-name">{videoFile.name}</p>
+                          <p className="uploaded-file-name">{videoFileName}</p>
                           <button
                             className="remove-file-button"
                             onClick={() => setVideoFile(null)}
@@ -339,7 +361,7 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
                     {thumbnailFile && (
                       <div className="swift-folios-research-file-display">
                         <p className="uploaded-file-name">
-                          {thumbnailFile.name}
+                          {thumbnailFileName}
                         </p>
                         <button
                           className="remove-file-button"

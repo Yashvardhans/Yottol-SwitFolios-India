@@ -268,7 +268,7 @@ form .type-select{
   display: flex;
   flex-wrap: wrap;
   gap: 10px; 
-  margin-top: 10px;
+  
 }
 
 .selected-stock-item {

@@ -1,4 +1,3 @@
-
 import React from "react";
 import "./CustomSelect.css";
 import ArrowUp from "../../../assets/icons/ArrowUp.svg";
@@ -8,31 +7,15 @@ class CustomSelect extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      heading: this.props.heading || "Select",
       isListOpen: false,
-      title: this.props.options[this.props.defaultIndex] || this.props.title,
-      selectedIndex: this.props.defaultIndex,
     };
     this.toggleSelect = this.toggleSelect.bind(this);
     this.closeSelect = this.closeSelect.bind(this);
     this.selectOption = this.selectOption.bind(this);
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.defaultIndex !== prevProps.defaultIndex) {
-      this.setState({
-        title: this.props.options[this.props.defaultIndex] || this.props.title,
-      });
-    }
-
-    if (this.props.options !== prevProps.options) {
-      this.setState({
-        title: this.props.options[this.props.defaultIndex] || this.props.title,
-      });
-    }
-
+  componentDidUpdate(prevProps, prevState) {
     const { isListOpen } = this.state;
-
     setTimeout(() => {
       if (isListOpen) {
         window.addEventListener("click", this.closeSelect);
@@ -49,16 +32,11 @@ class CustomSelect extends React.PureComponent {
   }
 
   selectOption(indx, value) {
-    this.setState(
-      {
-        title: value,
-        selectedIndex: indx,
-      },
-      () => {
-        this.toggleSelect();
-        this.props.onTypeChange(value);
-      }
-    );
+    // Call parent's onTypeChange to update the controlled value.
+    this.props.onTypeChange(value);
+    this.setState({
+      isListOpen: false,
+    });
   }
 
   closeSelect() {
@@ -68,23 +46,18 @@ class CustomSelect extends React.PureComponent {
   }
 
   render() {
-    const { width, height, options, error, formateName } = this.props;
-    const { title, heading, isListOpen, selectedIndex } = this.state;
+    const { width, height, options, error, formateName, heading, placeholder, value } = this.props;
+    const { isListOpen } = this.state;
+    const displayValue = value || placeholder;
     return (
       <div className="custom-select">
-        <p className="select-title">{heading}</p>
+        <p className="select-title">{heading || "Select"}</p>
         <div
           className="custom-select-header"
-          onClick={() => {
-            this.toggleSelect();
-          }}
+          onClick={this.toggleSelect}
         >
           <span className="custom-select-title">
-            {title
-              ? formateName
-                ? formateName(title)
-                : title
-              : this.props.placeholder}
+            {displayValue && formateName ? formateName(displayValue) : displayValue}
           </span>
           <span>
             {isListOpen ? (
@@ -93,37 +66,25 @@ class CustomSelect extends React.PureComponent {
               <img width={20} height={20} src={ArrowDown} alt="" />
             )}
           </span>
-          {isListOpen ? (
+          {isListOpen && (
             <div className="custom-select-container overflow">
-              {options.map((option, indx) => {
-                return (
-                  <span
-                    key={indx}
-                    className={
-                      selectedIndex === indx
-                        ? "custom-select-option option-selected"
-                        : "custom-select-option"
-                    }
-                    onClick={() => {
-                      this.selectOption(indx, option);
-                    }}
-                  >
-                    {formateName ? formateName(option) : option}
-                  </span>
-                );
-              })}
+              {options.map((option, indx) => (
+                <span
+                  key={indx}
+                  className={
+                    (value === option)
+                      ? "custom-select-option option-selected"
+                      : "custom-select-option"
+                  }
+                  onClick={() => this.selectOption(indx, option)}
+                >
+                  {formateName ? formateName(option) : option}
+                </span>
+              ))}
             </div>
-          ) : (
-            <></>
           )}
         </div>
-        <p
-          className={
-            error === ""
-              ? "error-text hide swift-back-office-error"
-              : "error-text swift-back-office-error"
-          }
-        >
+        <p className={error === "" ? "error-text hide swift-back-office-error" : "error-text swift-back-office-error"}>
           {error}
         </p>
       </div>

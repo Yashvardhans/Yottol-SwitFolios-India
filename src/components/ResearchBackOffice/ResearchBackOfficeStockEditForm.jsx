@@ -6,11 +6,19 @@ import { Alert } from "../CustomComponents/CustomAlert/CustomAlert";
 import ServerRequest from "../../utils/ServerRequest";
 import "./ResearchBackOfficeStockEditForm.css";
 
-const ResearchBackOfficeStockEditForm = ({ postId, onClose }) => {
-  const [singleStockSelections, setSingleStockSelections] = useState([]);
-  const [relatedStockSelections, setRelatedStockSelections] = useState([]);
+const ResearchBackOfficeStockEditForm = ({ postData, onClose }) => {
+  console.log("postId====", postData);
+
+  const [singleStockSelections, setSingleStockSelections] = useState(
+    postData?.stock_code ? [postData.stock_code] : []
+  );
+  const [relatedStockSelections, setRelatedStockSelections] = useState(
+    postData?.related_stock || []
+  );
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const postId = postData.id;
 
   const showError = (msg) => {
     return Alert({
@@ -51,25 +59,21 @@ const ResearchBackOfficeStockEditForm = ({ postId, onClose }) => {
   };
 
   const handleRelatedStockSelection = (selectedStock) => {
-    
     if (singleStockSelections.includes(selectedStock)) {
       showError("This stock is already selected as the main stock.");
       return;
     }
 
-    
     if (relatedStockSelections.includes(selectedStock)) {
       showError("This stock is already selected as a related stock.");
       return;
     }
 
-    
     if (relatedStockSelections.length >= 3) {
       showError("You can select a maximum of 3 related stocks.");
       return;
     }
 
-    
     setRelatedStockSelections([...relatedStockSelections, selectedStock]);
   };
 
@@ -131,7 +135,9 @@ const ResearchBackOfficeStockEditForm = ({ postId, onClose }) => {
               ✖
             </button>
           </div>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} style={{display: "flex",flexDirection: "column",gap: "15px"}}
+    
+>
             <div className="back-office-stock-container">
               <label className="stock-label">Select Stock</label>
               <div className="stock-container">

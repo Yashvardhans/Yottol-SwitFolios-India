@@ -75,15 +75,17 @@ const OriginalResearch2Main = ({ postDetails }) => {
 
   const handleFileDownload = async (fileUrl) => {
     try {
-      const response = await fetch(fileUrl);
+      const cleanUrl = fileUrl?.split('_')[0];
+      const response = await fetch(cleanUrl);
       if (!response.ok) throw new Error("File not found or inaccessible");
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
 
       const link = document.createElement("a");
+      const downloadName = fileUrl?.split('_').pop() || "file";
       link.href = url;
-      link.download = fileUrl.split("/").pop();
+      link.download = downloadName
       document.body.appendChild(link);
       link.click();
       link.remove();

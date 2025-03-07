@@ -18,6 +18,8 @@ import Pulse from "../CustomComponents/Loader/Pulse";
 import "./ResearchBackOfficeUpdateForm.css";
 
 const ResearchBackOfficeUpdateForm = ({ postData, onClose }) => {
+  console.log("postData",postData);
+  
   const navigate = useNavigate();
   const [type, setType] = useState("");
   const [heading, setHeading] = useState("");
@@ -139,7 +141,7 @@ const ResearchBackOfficeUpdateForm = ({ postData, onClose }) => {
     }
     if (!attachments){
       showError("Please upload a Pdf");
-      return
+      return;
     }
     if (!body.trim()) {
       showError("Please enter content for the body.");
@@ -203,6 +205,7 @@ const ResearchBackOfficeUpdateForm = ({ postData, onClose }) => {
                 heading="Type"
                 options={["Select Type","post", "video"]}
                 defaultIndex={0}
+                value={type}
                 onTypeChange={(value) => setType(value)}
                 placeholder="Select Type"
                 error={errors.type}

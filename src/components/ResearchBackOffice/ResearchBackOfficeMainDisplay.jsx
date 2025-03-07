@@ -58,12 +58,13 @@ const ResearchBackOfficeMainDisplay = ({ postDetails }) => {
 
   const handleFileDownload = async (fileUrl) => {
     try {
-      const response = await fetch(fileUrl);
+      const cleanUrl = fileUrl.split('_')[0];
+      const response = await fetch(cleanUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = fileUrl.split("/").pop();
+      link.download = cleanUrl.split('/').pop();
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -71,7 +72,6 @@ const ResearchBackOfficeMainDisplay = ({ postDetails }) => {
       console.error("Download error:", error);
     }
   };
-
   return (
     <div>
       <div className="swift-folios-back-office-posts-container">
@@ -155,7 +155,7 @@ const ResearchBackOfficeMainDisplay = ({ postDetails }) => {
               {detail.video_url && (
                 <div className="swift-folios-research-back-office-video-preview-container">
                   <ReactPlayer
-                    url={detail.video_url}
+                    url={detail.video_url.split('_')[0]}
                     light={
                       <div
                         style={{

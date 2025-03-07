@@ -95,7 +95,7 @@ const ResearchBackOfficeDisplay = ({ fundData }) => {
               <ResearchBackOfficeHorizontalDisplay stockCode={data.stock_code} />
               <div className="swift-folios-back-office-buttons-container">
               <button onClick={() => handleUpdateClick(data)}  className="swift-folios-research-back-office-button">Update</button>
-              <button onClick={() => handleEditStockClick(data.id) } className="swift-folios-research-back-office-button">Edit Stock</button>
+              <button onClick={() => handleEditStockClick(data) } className="swift-folios-research-back-office-button">Edit Stock</button>
               </div>
             </div>
             <ResearchBackOfficeMainDisplay key={data.id} postDetails={data.post_details} />
@@ -114,7 +114,7 @@ const ResearchBackOfficeDisplay = ({ fundData }) => {
       )}
       {isEditStockModalOpen && (
         <SwiftFoliosModal closeModal={handleCloseModal}  className="swift-folios-back-office-edit-stock-modal">
-          <div className="modal stock-edit-modal"><ResearchBackOfficeStockEditForm postId={selectedPost} onClose={handleCloseModal} /></div>
+          <div className="modal stock-edit-modal"><ResearchBackOfficeStockEditForm postData={selectedPost} onClose={handleCloseModal} /></div>
         </SwiftFoliosModal>
       )}
     </div>
