@@ -115,7 +115,7 @@ if (sortedDetails.length === 1) {
             <div
               key={detail.id}
               className={`swift-folios-research-row2 ${
-                detail.video_url ? "with-video" : ""
+                detail.video_url && detail.video_url !== "null" ? "with-video" : ""
               }`}
               onClick={() => handleVisitStatus(detail.id)}
               style={{
@@ -154,7 +154,7 @@ if (sortedDetails.length === 1) {
                 {detail.file_url && (
                   <div className="swift-folios-research-file-container">
                     <div className="swift-folios-research-file">
-                      <img src={downloadIcon} alt="file preview" />
+                      <img src={downloadIcon} alt="file preview" onClick={() => handleFileDownload(detail.file_url)}/>
                     </div>
                     <button
                       onClick={() => handleFileDownload(detail.file_url)}
@@ -184,7 +184,7 @@ if (sortedDetails.length === 1) {
                   </div>
                 )}
               </div>
-              {detail.video_url && (
+              {detail.video_url  && detail.video_url !== "null" && (
                 <div
                   key={detail.id}
                   style={{
@@ -201,7 +201,7 @@ if (sortedDetails.length === 1) {
                         style={{
                           width: "100%",
                           height: "100%",
-                          backgroundImage: `url(${detail.thumbnail_url})`,
+                          backgroundImage: `url(${detail.thumbnail_url?.split('_')[0]})`,
                           backgroundSize: "cover",
                           filter: "blur(4px)",
                         }}

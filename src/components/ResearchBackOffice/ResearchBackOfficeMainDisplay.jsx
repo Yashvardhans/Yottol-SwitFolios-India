@@ -72,6 +72,8 @@ const ResearchBackOfficeMainDisplay = ({ postDetails }) => {
       console.error("Download error:", error);
     }
   };
+  console.log("details",postDetails.thumbnail_url?.split('_')[0]);
+  
   return (
     <div>
       <div className="swift-folios-back-office-posts-container">
@@ -99,7 +101,7 @@ const ResearchBackOfficeMainDisplay = ({ postDetails }) => {
             <div
               key={detail.id}
               className={`swift-folios-back-office-research-row2 ${
-                detail.video_url ? "with-video" : ""
+                detail.video_url && detail.video_url !== "null" ? "with-video" : ""
               }`}
             >
               <div className="swift-folios-back-office-row2-sub-container">
@@ -120,7 +122,7 @@ const ResearchBackOfficeMainDisplay = ({ postDetails }) => {
                 {detail.file_url && (
                   <div className="swift-folios-research-file-container">
                     <div className="swift-folios-research-file">
-                      <img src={downloadIcon} alt="file preview" />
+                      <img src={downloadIcon} alt="file preview" onClick={() => handleFileDownload(detail.file_url)}/>
                     </div>
                     <button
                       onClick={() => handleFileDownload(detail.file_url)}
@@ -152,7 +154,7 @@ const ResearchBackOfficeMainDisplay = ({ postDetails }) => {
                 )}
               </div>
 
-              {detail.video_url && (
+              {detail.video_url  && detail.video_url !== "null" &&  (
                 <div className="swift-folios-research-back-office-video-preview-container">
                   <ReactPlayer
                     url={detail.video_url.split('_')[0]}
@@ -161,7 +163,7 @@ const ResearchBackOfficeMainDisplay = ({ postDetails }) => {
                         style={{
                           width: "100%",
                           height: "100%",
-                          backgroundImage: `url(${detail.thumbnail_url})`,
+                          backgroundImage: `url(${detail.thumbnail_url?.split('_')[0]})`,
                           backgroundSize: "cover",
                           filter: "blur(4px)",
                         }}

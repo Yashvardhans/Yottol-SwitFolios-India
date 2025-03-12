@@ -166,6 +166,10 @@ const SwiftFoliosResearchForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!attachments) {
+      showError("Please provide File");
+      return;
+    }
     if (type === "video" && videoFile && videoURL) {
       showError("Please provide either a video file or a video URL, not both.");
       return;
@@ -206,7 +210,7 @@ const SwiftFoliosResearchForm = () => {
       showError("Please select at least one related stock.");
       return;
     }
-    const currentDate = new Date().toISOString().split("T")[0];
+    const currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
     const formData = new FormData();
     formData.append("postId", postId);
     formData.append("id", uniqueId);
@@ -259,9 +263,10 @@ const SwiftFoliosResearchForm = () => {
           <div className="swift-folios-research-form-group type-select">
             <CustomSelect
               heading="Type"
-              options={["post", "video"]}
+              options={["Select Type", "Post", "Video"]}
               defaultIndex={0}
-              onTypeChange={(value) => setType(value)}
+              value={type.charAt(0).toUpperCase() + type.slice(1)}
+              onTypeChange={(value) => setType(value.toLowerCase())}
               placeholder="Select Type"
               error={errors.type}
             />

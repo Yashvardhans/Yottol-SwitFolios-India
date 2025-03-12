@@ -26,22 +26,24 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
   const [thumbnailFileUrl = "", thumbnailFileName = ""] =
     postData?.thumbnail_url?.split("_") || [];
   const [videoFileUrl = "", videoFileName = ""] =
-    postData?.video_url?.split("_") || [];
-  console.log("urlssss", pdfFileName, pdfFileUrl);
+    postData?.video_url?.split("_") || [];  
 
   const [heading, setHeading] = useState(postData?.heading || "");
   const [body, setBody] = useState(postData?.description || "");
-  const [attachments, setAttachments] = useState(pdfFileUrl || null);
-  const [videoFile, setVideoFile] = useState(null);
-  const videoUrlValue =
-    postData?.video_url && postData.video_url !== "null"
-      ? postData.video_url
-      : null;
-
-  const [type, setType] = useState(videoUrlValue ? "video" : "post");
+  const [attachments, setAttachments] = useState(pdfFileName || null);
+  const [videoFile, setVideoFile] = useState(videoFileName);
+  const videoUrlValue = 
+  postData?.video_url && 
+  postData.video_url !== "null" && 
+  !postData.video_url.startsWith("https://yottol.s3.amazonaws.com/") 
+    ? postData.video_url 
+    : null;
+  console.log("videoURL s" , videoFileUrl,videoUrlValue);
+  
+  const [type, setType] = useState((videoUrlValue || (videoFileUrl && videoFileUrl !== "null")) ? "video" : "post");
   const [videoURL, setVideoURL] = useState(videoUrlValue);
   const [isImageEditorOpen, setIsImageEditorOpen] = useState(false);
-  const [thumbnailFile, setThumbnailFile] = useState(null);
+  const [thumbnailFile, setThumbnailFile] = useState(thumbnailFileName);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -123,18 +125,6 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
     }
   }, [type]);
 
-  // const validateForm = () => {
-  //   const newErrors = {};
-
-  //   if (!type) newErrors.type = "Type is required.";
-  //   if (!heading.trim()) newErrors.heading = "Heading is required.";
-  //   if (!body.trim()) newErrors.body = "Body content is required.";
-  //   if (type === "video" && !videoFile && !videoURL)
-  //     newErrors.video = "Video file or URL is required.";
-
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // };
   const isBodyEmpty = (html) => {
     if (!html) return true;
     const div = document.createElement("div");
@@ -145,7 +135,6 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (!validateForm()) return;
     if (type === "video" && videoFile && videoURL) {
       showError("Please provide either a video file or a video URL, not both.");
       return;
@@ -174,6 +163,10 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
       showError("Please provide either a Thumbnail File");
       return;
     }
+    if (!attachments){
+      showError("Please provide File");
+      return;
+    }
 
     const currentDate = new Date().toISOString().split("T")[0];
     const formData = new FormData();
@@ -182,10 +175,19 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
     formData.append("heading", heading);
     formData.append("videoUrl", videoURL);
 
-    if (attachments) formData.append("file", attachments);
-    if (videoFile) formData.append("videoFile", videoFile);
-    if (thumbnailFile) formData.append("thumbnailFile", thumbnailFile);
-
+    if (attachments instanceof File) {
+      formData.append("file", attachments);
+    }
+    if (videoFile instanceof File) {
+      formData.append("videoFile", videoFile);
+    }
+    if (thumbnailFile) {
+      formData.append("thumbnailFile", thumbnailFile);
+    }
+    console.log("FormData Entries:");
+for (let [key, value] of formData.entries()) {
+  console.log(key, value);
+}
     try {
       setLoading(true);
       const request = await ServerRequest({
@@ -208,6 +210,8 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
       setLoading(false);
     }
   };
+  console.log("thumb",thumbnailFile);
+  
 
   return (
     <div className="swift-folios-research-back-office-form-container">
@@ -286,7 +290,7 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
                   />
                   {attachments && (
                     <div className="swift-folios-research-back-office-file-display">
-                      <p className="uploaded-file-name">{pdfFileName}</p>
+                      {typeof attachments === "object" ? attachments.name : pdfFileName}
                       <button
                         className="remove-file-button"
                         onClick={() => setAttachments(null)}
@@ -361,7 +365,7 @@ const ResearchBackOfficeMainDisplayEditForm = ({ postData, onClose }) => {
                     {thumbnailFile && (
                       <div className="swift-folios-research-file-display">
                         <p className="uploaded-file-name">
-                          {thumbnailFileName}
+                          {typeof thumbnailFile === "object" ? thumbnailFile.name : thumbnailFileName}
                         </p>
                         <button
                           className="remove-file-button"

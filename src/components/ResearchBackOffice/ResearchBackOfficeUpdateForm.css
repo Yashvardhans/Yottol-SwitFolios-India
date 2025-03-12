@@ -161,6 +161,7 @@
 }
 
 .swift-folios-research-back-office-file-display {
+  align-items: center;
   display: flex;
   gap: 5px;
 }

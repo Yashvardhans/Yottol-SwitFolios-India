@@ -203,10 +203,10 @@ const ResearchBackOfficeUpdateForm = ({ postData, onClose }) => {
             <div className="swift-folios-research-back-office-form-group header-dropdown">
               <CustomSelect
                 heading="Type"
-                options={["Select Type","post", "video"]}
+                options={["Select Type","Post", "Video"]}
                 defaultIndex={0}
-                value={type}
-                onTypeChange={(value) => setType(value)}
+                value={type.charAt(0).toUpperCase() + type.slice(1)}
+                onTypeChange={(value) => setType(value.toLowerCase())}
                 placeholder="Select Type"
                 error={errors.type}
               />
